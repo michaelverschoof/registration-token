@@ -1,4 +1,4 @@
-package nl.michaelv.registerandlogin.service;
+package nl.michaelv.service;
 
 import java.util.Arrays;
 import java.util.HashSet;
@@ -7,10 +7,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import nl.michaelv.registerandlogin.model.Role;
-import nl.michaelv.registerandlogin.model.User;
-import nl.michaelv.registerandlogin.repository.RoleRepository;
-import nl.michaelv.registerandlogin.repository.UserRepository;
+import nl.michaelv.model.Role;
+import nl.michaelv.model.User;
+import nl.michaelv.repository.RoleRepository;
+import nl.michaelv.repository.UserRepository;
 
 @Service("userService")
 public class UserServiceImpl implements UserService {

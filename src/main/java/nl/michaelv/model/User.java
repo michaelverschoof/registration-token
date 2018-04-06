@@ -1,4 +1,4 @@
-package nl.michaelv.registerandlogin.model;
+package nl.michaelv.model;
 
 import java.util.HashSet;
 import java.util.Set;

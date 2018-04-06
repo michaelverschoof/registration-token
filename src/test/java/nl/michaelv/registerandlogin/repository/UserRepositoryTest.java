@@ -9,8 +9,9 @@ import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.boot.test.autoconfigure.orm.jpa.TestEntityManager;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import nl.michaelv.registerandlogin.model.Role;
-import nl.michaelv.registerandlogin.model.User;
+import nl.michaelv.model.Role;
+import nl.michaelv.model.User;
+import nl.michaelv.repository.UserRepository;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest

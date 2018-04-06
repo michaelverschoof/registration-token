@@ -1,6 +1,6 @@
-package nl.michaelv.registerandlogin.service;
+package nl.michaelv.service;
 
-import nl.michaelv.registerandlogin.model.User;
+import nl.michaelv.model.User;
 
 public interface UserService {
 

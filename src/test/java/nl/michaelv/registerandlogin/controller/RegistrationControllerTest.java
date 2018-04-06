@@ -20,9 +20,10 @@ import org.mockito.Spy;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import nl.michaelv.registerandlogin.model.Role;
-import nl.michaelv.registerandlogin.model.User;
-import nl.michaelv.registerandlogin.service.UserService;
+import nl.michaelv.controller.RegistrationController;
+import nl.michaelv.model.Role;
+import nl.michaelv.model.User;
+import nl.michaelv.service.UserService;
 
 public class RegistrationControllerTest {
 

@@ -1,4 +1,4 @@
-package nl.michaelv.registerandlogin.model;
+package nl.michaelv.model;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;

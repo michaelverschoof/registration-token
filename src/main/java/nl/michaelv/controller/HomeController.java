@@ -1,4 +1,4 @@
-package nl.michaelv.registerandlogin.controller;
+package nl.michaelv.controller;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -7,8 +7,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
-import nl.michaelv.registerandlogin.model.User;
-import nl.michaelv.registerandlogin.service.UserService;
+import nl.michaelv.model.User;
+import nl.michaelv.service.UserService;
 
 @Controller
 public class HomeController {

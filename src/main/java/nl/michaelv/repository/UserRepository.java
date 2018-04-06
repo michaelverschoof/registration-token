@@ -1,9 +1,9 @@
-package nl.michaelv.registerandlogin.repository;
+package nl.michaelv.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
-import nl.michaelv.registerandlogin.model.User;
+import nl.michaelv.model.User;
 
 @Repository("userRepository")
 public interface UserRepository extends JpaRepository<User, Long> {

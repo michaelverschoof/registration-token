@@ -1,4 +1,4 @@
-package nl.michaelv.registerandlogin.controller;
+package nl.michaelv.controller;
 
 import javax.validation.Valid;
 
@@ -9,8 +9,8 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 
-import nl.michaelv.registerandlogin.model.User;
-import nl.michaelv.registerandlogin.service.UserService;
+import nl.michaelv.model.User;
+import nl.michaelv.service.UserService;
 
 @Controller
 public class RegistrationController {

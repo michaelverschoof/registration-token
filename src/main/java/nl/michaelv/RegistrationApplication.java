@@ -1,4 +1,4 @@
-package nl.michaelv.registerandlogin;
+package nl.michaelv;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;

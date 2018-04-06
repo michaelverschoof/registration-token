@@ -16,10 +16,12 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import nl.michaelv.registerandlogin.model.Role;
-import nl.michaelv.registerandlogin.model.User;
-import nl.michaelv.registerandlogin.repository.RoleRepository;
-import nl.michaelv.registerandlogin.repository.UserRepository;
+import nl.michaelv.model.Role;
+import nl.michaelv.model.User;
+import nl.michaelv.repository.RoleRepository;
+import nl.michaelv.repository.UserRepository;
+import nl.michaelv.service.UserService;
+import nl.michaelv.service.UserServiceImpl;
 
 @RunWith(SpringRunner.class)
 public class UserServiceImplTest {

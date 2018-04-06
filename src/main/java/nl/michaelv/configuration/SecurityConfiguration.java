@@ -1,4 +1,4 @@
-package nl.michaelv.registerandlogin.configuration;
+package nl.michaelv.configuration;
 
 import javax.sql.DataSource;
 

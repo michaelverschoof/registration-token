@@ -4,11 +4,11 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>nl.michaelv</groupId>
-	<artifactId>registration-basic</artifactId>
+	<artifactId>registration-token</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
 	<packaging>jar</packaging>
 
-	<name>RegistrationBasic</name>
+	<name>RegistrationToken</name>
 	<description>Spring Boot, Spring Security and Thymeleaf registration and login template application</description>
 
 	<parent>
