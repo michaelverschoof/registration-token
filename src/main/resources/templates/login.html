@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-US">
+
+<head>
+	<title>Registration and login application</title>
+	
+	<meta th:replace="fragments/head :: base-metas" />
+	<link th:replace="fragments/head :: base-fonts" />
+	<link th:replace="fragments/head :: base-css" />
+	<link th:replace="fragments/head :: forms-css" />
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" href="../../css/login.css" />
+</head>
+
+<body>
+	<header th:replace="fragments/main :: header"></header>
+
+	<main>
+		<h1>Log in to the application</h1>
+		<form th:action="@{/login}" method="post" class="login">
+			<h2>Proof that you're allowed here...</h2>
+			<p th:if="${param.error}" class="error">Email address or password is invalid.</p>
+			<fieldset>
+				<label for="email"><i class="fa fa-at"></i></label
+				><input type="email" id="email" name="email" placeholder="Email addres" />
+			</fieldset>
+			<fieldset>
+				<label for="password"><i class="fa fa-key"></i></label
+				><input type="password" id="password" name="password" placeholder="Password" />
+				<a th:href="@{/forgotpassword}" href="/forgotpassword" class="forgot">Forgot?</a>
+			</fieldset>
+			<fieldset>
+				<button type="submit" name="submit" value="login">Log in</button>
+			</fieldset>
+		</form>
+
+		<div class="signup">
+			<span>Don't have an account? hoi</span>
+			<a th:href="@{/registration}" href="/registration">Sign up</a>
+		</div>
+
+	</main>
+
+	<footer th:replace="fragments/main :: footer"></footer>
+</body>
+</html>

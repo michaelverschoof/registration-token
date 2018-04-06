@@ -1,0 +1,9 @@
+@charset "UTF-8";
+
+main form {
+	width: 350px;
+}
+
+main form fieldset:last-child {
+	text-align: right;
+}

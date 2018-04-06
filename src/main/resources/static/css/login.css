@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+a.forgot {
+	float: right;
+	line-height: 2em;
+	color: #888;
+}
+
+a.forgot:hover, 
+.signup a:hover {
+	text-decoration: underline;
+}
+
+main form {
+	width: 350px;
+}
+
+main form fieldset:last-child {
+	text-align: right;
+}
+
+.signup {
+	margin-top: 4rem;
+	text-align: center;
+}
+
+.signup a {
+	color: #3A7AA6;
+}

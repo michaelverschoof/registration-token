@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-US">
+
+<head>
+	<title>Registration and login application</title>
+	
+	<meta th:replace="fragments/head :: base-metas" />
+	<link th:replace="fragments/head :: base-fonts" />
+	<link th:replace="fragments/head :: base-css" />
+	<link th:replace="fragments/head :: forms-css" />
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/login.css}" href="../../css/login.css" />
+</head>
+
+<body>
+	<header th:replace="fragments/main :: header"></header>
+
+	<main>
+		<h1>Welcome <span th:text="${user.name}">user</span>!</h1>
+
+	</main>
+
+	<footer th:replace="fragments/main :: footer"></footer>
+</body>
+</html>

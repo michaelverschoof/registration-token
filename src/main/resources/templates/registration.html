@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="http://www.thymeleaf.org" lang="en-US">
+
+<head>
+	<title>Registration and login application</title>
+
+	<meta th:replace="fragments/head :: base-metas" />
+	<link th:replace="fragments/head :: base-fonts" />
+	<link th:replace="fragments/head :: base-css" />
+	<link th:replace="fragments/head :: forms-css" />
+
+	<link rel="stylesheet" type="text/css" th:href="@{/css/registration.css}" href="../../css/registration.css" />
+</head>
+<body>
+	<header th:replace="fragments/main :: header"></header>
+
+	<main>
+		<h1>Sign up for the application</h1>
+		<form th:action="@{/registration}" th:object="${user}" method="post" class="login" autocomplete="off">
+			<p th:if="${message}" th:utext="${message}" class="message">
+				Success message
+			</p>
+
+			<h2>Join the rest of us</h2>
+			<fieldset>
+				<label for="name"><i class="fa fa-user"></i></label
+				><input th:field="*{name}" th:errorclass="error" type="text" placeholder="Name" autocomplete="off" />
+				<p th:if="${#fields.hasErrors('name')}" th:errors="*{name}" class="error">
+					Error message
+				</p>
+			</fieldset>
+			<fieldset>
+				<label for="email"><i class="fa fa-at"></i></label
+				><input th:field="*{email}" th:errorclass="error" type="email" placeholder="Email addres" autocomplete="off" />
+				<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error">
+					Error message
+				</p>
+			</fieldset>
+			<fieldset>
+				<label for="password"><i class="fa fa-key"></i></label
+				><input th:field="*{password}" th:errorclass="error" type="password" placeholder="Password" autocomplete="new-password" />
+				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error">
+					Error message
+				</p>
+			</fieldset>
+			<fieldset>
+				<button type="submit" name="submit" value="signup">Sign up</button>
+			</fieldset>
+		</form>
+	</main>
+
+	<footer th:replace="fragments/main :: footer"></footer>
+</body>
+</html>

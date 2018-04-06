@@ -1,0 +1,103 @@
+@charset "UTF-8";
+
+/*
+ * Header
+ */
+header {
+	margin: 0;
+	padding: 0;
+	height: 6rem;
+	background: #232C3B;
+	font-size: 14px;
+}
+
+header a,
+header a:hover,
+header a:visited {
+	color: #FFF;
+}
+
+/* Title */
+header h1, header nav {
+	display: inline-block;
+	vertical-align: top;
+	color: #FFF;
+}
+
+header h1 {
+	margin: 0 0 0 5rem;
+	height: 6rem;
+	line-height: 6rem;
+	font-family: Roboto, Arial;
+	font-size: 2em;
+	font-weight: 300;
+}
+
+header h1 a {
+	color: #FFF;
+}
+
+header h1 a span {
+	color: #FF9800;
+	font-weight: 500;
+}
+
+/* Menu */
+header nav {
+	float: right;
+	margin-right: 3rem;
+	font-family: 'Open Sans', Arial;
+}
+
+header nav ul,
+header nav ul li {
+	margin: 0;
+	padding: 0;
+	list-style: none;
+	display: inline-block;
+	vertical-align: top;
+}
+
+header nav ul li a {
+	position: relative;
+	padding: 0 1em;
+	min-width: 6rem;
+	height: 6rem;
+	line-height: 6rem;
+	font-weight: 500;
+	text-decoration: none;
+	text-transform: uppercase;
+	text-align: center;
+	letter-spacing: 0.5px;
+}
+
+header nav ul li a:before {
+	content: "";
+	position: absolute;
+	width: calc(100% - 2em);
+	height: 3px;
+	left: 1em;
+	background-color: #03A9F4;
+	visibility: hidden;
+}
+
+header nav ul li a:before {
+	top: 4.5em;
+}
+
+header nav ul li a.active:before {
+	background-color: #FF9800;
+}
+
+header nav ul li a:hover {
+	background-color: rgba(255, 255, 255, 0.1);
+}
+
+header nav ul li a:hover:before,
+header nav ul li a.active:before {
+	visibility: visible;
+}
+
+header nav ul li a i {
+	font-size: 1.8em;
+}

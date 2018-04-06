@@ -1,0 +1,29 @@
+@charset "UTF-8";
+
+/*
+ * Footer
+ */
+footer {
+	padding: 1.5rem;
+	height: 5rem;
+	background: #232C3B;
+	color: #FFF;
+	text-align: center;
+}
+
+footer a {
+	vertical-align: top;
+	height: 2rem;
+	line-height: 2rem;
+	color: #FFF;
+	text-transform: uppercase;
+}
+
+footer a, 
+footer a:visited {
+	color: #FFF;
+}
+
+footer a:hover {
+	color: #FF9800;
+}
