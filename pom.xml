@@ -53,12 +53,7 @@
 			<groupId>org.hibernate</groupId>
 			<artifactId>hibernate-java8</artifactId>
 		</dependency>
-<!-- 
-		<dependency>
-			<groupId>org.hibernate</groupId>
-			<artifactId>hibernate-jpamodelgen</artifactId>
-		</dependency>
- -->
+
 		<!-- Scoped dependencies -->
 		<dependency>
 			<groupId>mysql</groupId>
