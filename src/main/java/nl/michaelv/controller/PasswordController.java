@@ -89,10 +89,10 @@ public class PasswordController {
 		}
 
 		redirectAttributes.addFlashAttribute("user", user);
-		return "redirect:/alter-password";
+		return "redirect:/set-password";
 	}
 
-	@GetMapping("/alter-password")
+	@GetMapping("/set-password")
 	public String alterPassword(Model model, final RedirectAttributes redirectAttributes) {
 
 		if (!redirectAttributes.containsAttribute("user")) {
@@ -103,16 +103,16 @@ public class PasswordController {
 		User user = (User) redirectAttributes.asMap().get("user");
 		model.addAttribute("user", user);
 		model.addAttribute("tab", "login");
-		return "alter-password";
+		return "set-password";
 	}
 
-	@PostMapping("/alter-password")
+	@PostMapping("/set-password")
 	public String alterPassword(@Valid User user, BindingResult result, Model model,
 			final RedirectAttributes redirectAttributes) {
 
 		if (!user.getPassword().equals(user.getPasswordConfirmation())) {
 			result.rejectValue("password", null, "The passwords do not match");
-			return "alter-password";
+			return "set-password";
 		}
 
 		List<String> issues = ValidationUtil.validatePassword(user.getPassword());
@@ -120,7 +120,7 @@ public class PasswordController {
 			for (String issue : issues) {
 				result.rejectValue("password", null, issue);
 			}
-			return "alter-password";
+			return "set-password";
 		}
 
 		PasswordToken token = userService.findPasswordTokenByUser(user);

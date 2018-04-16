@@ -9,14 +9,14 @@
 	<link th:replace="fragments/head :: base-css" />
 	<link th:replace="fragments/head :: forms-css" />
 
-	<link th:href="@{/css/registration.css}" href="../../css/registration.css" rel="stylesheet" type="text/css" />
+	<link th:href="@{/css/signup.css}" href="../../css/signup.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 	<header th:replace="fragments/main :: header"></header>
 
 	<main>
 		<h1>Sign up for the application</h1>
-		<form th:action="@{/signup}" th:object="${user}" method="post" class="login" autocomplete="off">
+		<form th:action="@{/signup}" th:object="${user}" method="post" autocomplete="off">
 			<p th:if="${message}" th:utext="${message}" class="message">Message</p>
 
 			<h2>Join the rest of us</h2>
