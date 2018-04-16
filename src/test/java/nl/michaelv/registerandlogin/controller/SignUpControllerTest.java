@@ -23,13 +23,13 @@ import nl.michaelv.model.Role;
 import nl.michaelv.model.User;
 import nl.michaelv.service.UserService;
 
-public class RegistrationControllerTest {
+public class SignUpControllerTest {
 
 	@Mock
 	private UserService userService;
 
 	@InjectMocks
-	SignUpController registrationController;
+	SignUpController signUpController;
 
 	@Spy
 	List<User> users = new ArrayList<User>();
@@ -52,7 +52,7 @@ public class RegistrationControllerTest {
 		when(userService.findUserByEmail(anyString())).thenReturn(null);
 		doNothing().when(userService).saveUser(any(User.class));
 
-		Assert.assertEquals(registrationController.registration(users.get(0), result, null, model), "registration");
+		Assert.assertEquals(signUpController.signup(users.get(0), result, null, model), "registration");
 		Assert.assertEquals(model.asMap().get("message"), "The registration has completed successfully");
 	}
 
@@ -64,7 +64,7 @@ public class RegistrationControllerTest {
 		u.setLastName("Lastname");
 		u.setEmail("user1@someprovider.com");
 		u.setPassword("123456");
-		u.setEnabled(true);
+		u.setVerified(true);
 		u.setRoles(getRoles());
 		users.add(u);
 
@@ -74,7 +74,7 @@ public class RegistrationControllerTest {
 		u.setLastName("Othername");
 		u.setEmail("user2@someprovider.com");
 		u.setPassword("abcdef");
-		u.setEnabled(true);
+		u.setVerified(true);
 		u.setRoles(getRoles());
 		users.add(u);
 

@@ -18,6 +18,8 @@ public interface UserService {
 
 	public User alterPassword(User user, PasswordToken token);
 
+	public User saveUser(User user);
+
 	public VerificationToken findVerificationToken(String token);
 
 	public VerificationToken createVerificationToken(User user, String token);

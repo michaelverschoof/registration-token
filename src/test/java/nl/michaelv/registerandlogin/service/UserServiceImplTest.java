@@ -81,7 +81,7 @@ public class UserServiceImplTest {
 		u.setLastName("Lastname");
 		u.setEmail("user1@someprovider.com");
 		u.setPassword("123456");
-		u.setEnabled(true);
+		u.setVerified(true);
 		u.addRole(getRole());
 
 		return u;

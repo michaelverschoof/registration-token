@@ -82,7 +82,7 @@ public class UserServiceImpl implements UserService {
 		return saveUser(user);
 	}
 
-	private User saveUser(User user) {
+	public User saveUser(User user) {
 		return userRepository.save(user);
 	}
 
