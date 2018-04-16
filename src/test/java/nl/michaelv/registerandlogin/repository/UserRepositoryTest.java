@@ -34,7 +34,9 @@ public class UserRepositoryTest {
 		User found = repo.findByEmail(user.getEmail());
 
 		// Then
-		assertThat(found.getName()).isEqualTo(user.getName());
+		assertThat(found.getFirstName()).isEqualTo(user.getFirstName());
+		assertThat(found.getMiddleName()).isEqualTo(user.getMiddleName());
+		assertThat(found.getLastName()).isEqualTo(user.getLastName());
 		assertThat(found.getEmail()).isEqualTo(user.getEmail());
 	}
 
@@ -50,10 +52,13 @@ public class UserRepositoryTest {
 	private User getUser() {
 		User u = new User();
 		u.setId(1);
-		u.setName("User1");
+		u.setFirstName("User1");
+		u.setMiddleName("von");
+		u.setLastName("Lastname");
 		u.setEmail("user1@someprovider.com");
 		u.setPassword("123456");
-		u.setActive(true);
+		u.setPasswordConfirmation("123456");
+		u.setEnabled(true);
 		u.addRole(getRole());
 
 		return u;

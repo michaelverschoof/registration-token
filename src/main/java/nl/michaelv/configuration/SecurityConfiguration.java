@@ -37,13 +37,22 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 
 	@Override
 	protected void configure(HttpSecurity http) throws Exception {
-
-		http.authorizeRequests().antMatchers("/").permitAll().antMatchers("/login").permitAll()
-				.antMatchers("/registration").permitAll().antMatchers("/secured/**").hasAuthority("USER").anyRequest()
-				.authenticated().and().csrf().disable().formLogin().loginPage("/login").failureUrl("/login?error=true")
-				.defaultSuccessUrl("/secured/").usernameParameter("email").passwordParameter("password").and().logout()
-				.logoutRequestMatcher(new AntPathRequestMatcher("/logout")).logoutSuccessUrl("/").and()
-				.exceptionHandling().accessDeniedPage("/access-denied");
+		http.authorizeRequests() //
+				.antMatchers("/").permitAll() //
+				.antMatchers("/login").permitAll() //
+				.antMatchers("/signup").permitAll() //
+				.antMatchers("/signup/verify/**").permitAll() //
+				.antMatchers("/forgot-password").permitAll() //
+				.antMatchers("/forgot-password/verify/**").permitAll() //
+				.antMatchers("/alter-password").permitAll() //
+				.antMatchers("/secured/**") //
+				.hasAuthority("USER").anyRequest().authenticated().and().csrf().disable() //
+				.formLogin().loginPage("/") //
+				.failureUrl("/login?error=true") //
+				.defaultSuccessUrl("/secured/") //
+				.usernameParameter("email").passwordParameter("password") //
+				.and().logout().logoutRequestMatcher(new AntPathRequestMatcher("/logout")) //
+				.logoutSuccessUrl("/").and().exceptionHandling().accessDeniedPage("/access-denied");
 	}
 
 	@Override

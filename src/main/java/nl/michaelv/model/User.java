@@ -1,7 +1,7 @@
 package nl.michaelv.model;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
+import java.util.List;
 
 import javax.persistence.CascadeType;
 import javax.persistence.Column;
@@ -13,6 +13,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.Pattern;
 
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.Length;
@@ -27,26 +29,40 @@ public class User {
 	@Column(name = "id")
 	private int id;
 
-	@Column(name = "name")
-	@NotEmpty(message = "Please provide a name")
-	private String name;
+	@Column(name = "first_name")
+	@NotEmpty(message = "Please provide a first name")
+	private String firstName;
+
+	@Column(name = "middle_name")
+	private String middleName;
+
+	@Column(name = "last_name")
+	@NotEmpty(message = "Please provide a last name")
+	private String lastName;
 
 	@Column(name = "email")
 	@Email(message = "Please provide a valid email address")
 	@NotEmpty(message = "Please provide a valid email address")
 	private String email;
 
+	@Column(name = "phone")
+	@Pattern(regexp = "^\\(?(\\+?\\d{0,3})\\)?( |-)?\\d{7,10}$")
+	private String phone;
+
 	@Column(name = "password")
 	@Length(min = 5, message = "Your password must have at least 5 characters")
 	@NotEmpty(message = "Please provide a password")
 	private String password;
 
-	@Column(name = "active")
-	private boolean active;
+	@Transient
+	private String passwordConfirmation;
+
+	@Column(name = "verified")
+	private boolean verified;
 
 	@ManyToMany(cascade = CascadeType.ALL)
 	@JoinTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "role.id"))
-	private Set<Role> roles;
+	private List<Role> roles;
 
 	public int getId() {
 		return id;
@@ -56,12 +72,28 @@ public class User {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getFirstName() {
+		return firstName;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setFirstName(String name) {
+		this.firstName = name;
+	}
+
+	public String getMiddleName() {
+		return middleName;
+	}
+
+	public void setMiddleName(String middleName) {
+		this.middleName = middleName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public String getEmail() {
@@ -72,6 +104,14 @@ public class User {
 		this.email = email;
 	}
 
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
+
 	public String getPassword() {
 		return password;
 	}
@@ -80,25 +120,33 @@ public class User {
 		this.password = password;
 	}
 
-	public boolean isActive() {
-		return active;
+	public String getPasswordConfirmation() {
+		return passwordConfirmation;
 	}
 
-	public void setActive(boolean active) {
-		this.active = active;
+	public void setPasswordConfirmation(String passwordConfirmation) {
+		this.passwordConfirmation = passwordConfirmation;
 	}
 
-	public Set<Role> getRoles() {
+	public boolean isVerified() {
+		return verified;
+	}
+
+	public void setVerified(boolean verified) {
+		this.verified = verified;
+	}
+
+	public List<Role> getRoles() {
 		return roles;
 	}
 
-	public void setRoles(Set<Role> roles) {
+	public void setRoles(List<Role> roles) {
 		this.roles = roles;
 	}
 
 	public void addRole(Role role) {
 		if (this.roles == null) {
-			this.roles = new HashSet<Role>();
+			this.roles = new ArrayList<Role>();
 		}
 		this.roles.add(role);
 	}

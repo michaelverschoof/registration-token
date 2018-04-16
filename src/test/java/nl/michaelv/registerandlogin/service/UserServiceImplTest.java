@@ -3,8 +3,7 @@ package nl.michaelv.registerandlogin.service;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-import java.util.Iterator;
-import java.util.Set;
+import java.util.List;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -77,10 +76,12 @@ public class UserServiceImplTest {
 	private User getUser() {
 		User u = new User();
 		u.setId(1);
-		u.setName("User1");
+		u.setFirstName("User1");
+		u.setMiddleName("von");
+		u.setLastName("Lastname");
 		u.setEmail("user1@someprovider.com");
 		u.setPassword("123456");
-		u.setActive(true);
+		u.setEnabled(true);
 		u.addRole(getRole());
 
 		return u;
@@ -95,11 +96,10 @@ public class UserServiceImplTest {
 	}
 
 	public boolean hasRole(User user, String name) {
-		Set<Role> roles = user.getRoles();
+		List<Role> roles = user.getRoles();
 
-		for (Iterator<Role> it = roles.iterator(); it.hasNext();) {
-			Role r = it.next();
-			if (r.getName().equals(name)) {
+		for (Role role : roles) {
+			if (role.getName().equals(name)) {
 				return true;
 			}
 		}

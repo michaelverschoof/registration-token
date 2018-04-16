@@ -8,11 +8,11 @@
 			<a href="https://www.michaelv.nl" target="_blank">Michael<span>Verschoof</span></a>
 		</h1>
 		<nav>
-			<ul th:if="${tab == 'login' || tab == 'registration'}">
+			<ul th:if="${tab == 'login' || tab == 'signup'}">
 				<li><a th:href="@{/}" href="/" th:class="${tab == 'login'} ? 'active' : null">Log in</a></li>
-				<li><a th:href="@{/registration}" th:class="${tab == 'registration'} ? 'active' : null" href="/registration">Sign up</a></li>
+				<li><a th:href="@{/signup}" href="/signup" th:class="${tab == 'signup'} ? 'active' : null">Sign up</a></li>
 			</ul>
-			<ul th:unless="${tab == 'login' || tab == 'registration'}">
+			<ul th:unless="${tab == 'login' || tab == 'signup'}">
 				<li><a th:href="@{/logout}" href="/logout"><i class="fa fa-sign-out-alt"></i></a></li>
 			</ul>
 		</nav>
