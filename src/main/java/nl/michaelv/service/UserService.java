@@ -1,33 +1,20 @@
 package nl.michaelv.service;
 
-import nl.michaelv.model.PasswordToken;
 import nl.michaelv.model.User;
-import nl.michaelv.model.VerificationToken;
+import nl.michaelv.model.forms.SignupForm;
 
 public interface UserService {
 
-	public User findUserByEmail(String email);
+	boolean exists(String email);
 
-	public User findUserByVerificationToken(String token);
+	User find(String email);
 
-	public User findUserByPasswordToken(String token);
+	User create(SignupForm form);
 
-	public User createUser(User user, String token);
+	User save(User user);
 
-	public User verifyUser(User user, VerificationToken token);
+	void delete(User user);
 
-	public User alterPassword(User user, PasswordToken token);
-
-	public User saveUser(User user);
-
-	public VerificationToken findVerificationToken(String token);
-
-	public VerificationToken createVerificationToken(User user, String token);
-
-	public PasswordToken findPasswordToken(String token);
-
-	public PasswordToken findPasswordTokenByUser(User user);
-
-	public PasswordToken createPasswordToken(User user, String token);
+	User changePassword(User user);
 
 }

@@ -8,6 +8,10 @@ main form {
 	padding: 0;
 }
 
+main form.small {
+	width: 350px;
+}
+
 main form h2 {
 	border: none;
 	font-size: 1.3em;

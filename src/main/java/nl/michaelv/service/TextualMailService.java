@@ -3,9 +3,9 @@ package nl.michaelv.service;
 import org.springframework.stereotype.Service;
 
 @Service("mailService")
-public class MailServiceImpl implements MailService {
+public class TextualMailService implements MailService {
 
-	// TODO: Enable mailing of the token
+	// TODO: Enable mailing
 	// @Autowired
 	// private JavaMailSender mailSender;
 

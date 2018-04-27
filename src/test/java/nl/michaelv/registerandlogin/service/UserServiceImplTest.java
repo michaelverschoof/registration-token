@@ -1,10 +1,11 @@
 package nl.michaelv.registerandlogin.service;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.mockito.Mockito.when;
-
-import java.util.List;
-
+import nl.michaelv.model.Role;
+import nl.michaelv.model.User;
+import nl.michaelv.repository.RoleRepository;
+import nl.michaelv.repository.UserRepository;
+import nl.michaelv.service.UserAccountService;
+import nl.michaelv.service.UserService;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -15,12 +16,10 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import nl.michaelv.model.Role;
-import nl.michaelv.model.User;
-import nl.michaelv.repository.RoleRepository;
-import nl.michaelv.repository.UserRepository;
-import nl.michaelv.service.UserService;
-import nl.michaelv.service.UserServiceImpl;
+import java.util.List;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
 public class UserServiceImplTest {
@@ -30,7 +29,7 @@ public class UserServiceImplTest {
 
 		@Bean
 		public UserService userService() {
-			return new UserServiceImpl();
+			return new UserAccountService();
 		}
 	}
 
@@ -59,7 +58,7 @@ public class UserServiceImplTest {
 	@Test
 	public void findUserByEmail() {
 		String email = "user1@someprovider.com";
-		User found = userService.findUserByEmail(email);
+		User found = userService.find(email);
 
 		assertThat(found.getEmail()).isEqualTo(email);
 		assertThat(hasRole(found, "USER")).isEqualTo(true);
@@ -68,7 +67,7 @@ public class UserServiceImplTest {
 	@Test
 	public void findUserByEmail_NotFound() {
 		String email = "notexisting@someprovider.com";
-		User found = userService.findUserByEmail(email);
+		User found = userService.find(email);
 
 		assertThat(found).isEqualTo(null);
 	}

@@ -1,13 +1,14 @@
 package nl.michaelv.controller;
 
-import java.time.ZonedDateTime;
-import java.util.List;
-import java.util.UUID;
-
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-
+import nl.michaelv.model.User;
+import nl.michaelv.model.VerificationToken;
+import nl.michaelv.model.forms.SignupForm;
+import nl.michaelv.service.MailService;
+import nl.michaelv.service.TokenService;
+import nl.michaelv.service.UserService;
+import nl.michaelv.util.ValidationUtil;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -16,11 +17,10 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import nl.michaelv.model.User;
-import nl.michaelv.model.VerificationToken;
-import nl.michaelv.service.MailServiceImpl;
-import nl.michaelv.service.UserService;
-import nl.michaelv.util.ValidationUtil;
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+import java.time.ZonedDateTime;
+import java.util.List;
 
 @Controller
 public class SignUpController {
@@ -29,33 +29,31 @@ public class SignUpController {
 	private UserService userService;
 
 	@Autowired
-	MailServiceImpl mailService;
+	private MailService mailService;
+
+	@Autowired
+	@Qualifier("verificationTokenService")
+	private TokenService verificationTokenService;
 
 	@GetMapping("/signup")
 	public String signup(Model model) {
-		User user = new User();
-		model.addAttribute("user", user);
+		SignupForm form = new SignupForm();
+		model.addAttribute("form", form);
 		model.addAttribute("tab", "signup");
 		return "signup";
 	}
 
 	@PostMapping("/signup")
-	public String signup(@Valid User user, BindingResult result, HttpServletRequest request, Model model) {
+	public String signup(@Valid SignupForm form, BindingResult result, HttpServletRequest request, Model model) {
 		model.addAttribute("tab", "signup");
 
 		if (!result.hasErrors()) {
-			User exists = userService.findUserByEmail(user.getEmail());
-			if (exists != null) {
+			if (userService.exists(form.getEmail())) {
 				result.rejectValue("email", null, "There is already a user registered with the email provided");
 				return "signup";
 			}
 
-			if (!user.getPassword().equals(user.getPasswordConfirmation())) {
-				result.rejectValue("password", null, "The passwords do not match");
-				return "signup";
-			}
-
-			List<String> issues = ValidationUtil.validatePassword(user.getPassword());
+			List<String> issues = ValidationUtil.validatePassword(form.getPassword());
 			if (issues.size() > 0) {
 				for (String issue : issues) {
 					result.rejectValue("password", null, issue);
@@ -63,18 +61,29 @@ public class SignUpController {
 				return "signup";
 			}
 
-			String token = UUID.randomUUID().toString();
-			User created = userService.createUser(user, token);
-			if (created == null) {
+			if (!form.getPassword().equals(form.getPasswordConfirmation())) {
+				result.rejectValue("password", null, "The passwords do not match");
+				return "signup";
+			}
+
+			User user = userService.create(form);
+			if (user == null) {
 				result.reject(null, "The registration has failed for some reason...");
 				return "signup";
 			}
 
-			String url = request.getRequestURI() + "/signup/verify/" + token;
-			mailService.sendVerificationMail(created.getEmail(), url);
+			VerificationToken verificationToken = (VerificationToken) verificationTokenService.create(user);
+			if (verificationToken == null) {
+				userService.delete(user);
+				result.reject(null, "The registration has failed for some reason...");
+				return "signup";
+			}
+
+			String url = request.getRequestURI() + "/verify/" + verificationToken.getToken();
+			mailService.sendVerificationMail(user.getEmail(), url);
 
 			model.addAttribute("message", "The registration has completed successfully. "
-					+ "A verification email has been sent to " + created.getEmail());
+					+ "A verification email has been sent to " + user.getEmail());
 			model.addAttribute("user", new User());
 		}
 
@@ -83,13 +92,14 @@ public class SignUpController {
 
 	@GetMapping("/signup/verify/{token}")
 	public String verifySignup(@PathVariable String token, final RedirectAttributes redirectAttributes) {
-		VerificationToken verificationToken = userService.findVerificationToken(token);
+		VerificationToken verificationToken = (VerificationToken) verificationTokenService.findByToken(token);
+
 		if (token == null) {
 			redirectAttributes.addFlashAttribute("error", "The used token does not exist");
 			return "redirect:/";
 		}
 
-		if (verificationToken.isUsed()) {
+		if (verificationToken.isConfirmed()) {
 			redirectAttributes.addFlashAttribute("error", "This token has already been used");
 			return "redirect:/";
 		}
@@ -105,7 +115,12 @@ public class SignUpController {
 			return "redirect:/";
 		}
 
-		User verified = userService.verifyUser(user, verificationToken);
+		verificationToken.confirm();
+		verificationTokenService.save(verificationToken);
+
+		user.verify();
+		User verified = userService.save(user);
+
 		if (verified == null) {
 			redirectAttributes.addFlashAttribute("error",
 					"The verification of the email address has failed for some reason...");

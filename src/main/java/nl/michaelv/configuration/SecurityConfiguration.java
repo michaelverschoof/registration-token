@@ -1,7 +1,5 @@
 package nl.michaelv.configuration;
 
-import javax.sql.DataSource;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +10,8 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
+import javax.sql.DataSource;
 
 @Configuration
 @EnableWebSecurity
@@ -44,10 +44,10 @@ public class SecurityConfiguration extends WebSecurityConfigurerAdapter {
 				.antMatchers("/signup/verify/**").permitAll() //
 				.antMatchers("/forgot-password").permitAll() //
 				.antMatchers("/forgot-password/verify/**").permitAll() //
-				.antMatchers("/alter-password").permitAll() //
+				.antMatchers("/set-password").permitAll() //
 				.antMatchers("/secured/**") //
 				.hasAuthority("USER").anyRequest().authenticated().and().csrf().disable() //
-				.formLogin().loginPage("/") //
+				.formLogin().loginPage("/login") //
 				.failureUrl("/login?error=true") //
 				.defaultSuccessUrl("/secured/") //
 				.usernameParameter("email").passwordParameter("password") //

@@ -10,7 +10,10 @@ public class ValidationUtil {
 	private static final Pattern CONTAINS_LOWERCASE = Pattern.compile("(?=.*[a-z])");
 	private static final Pattern CONTAINS_UPPERCASE = Pattern.compile("(?=.*[A-Z])");
 	private static final Pattern CONTAINS_SPECIAL = Pattern.compile("(?=.*[!@#$%^&+=*()_-])");
-	private static final Pattern CONTAINS_WHITESPACE = Pattern.compile("(?=\\S+$)");
+	private static final Pattern CONTAINS_WHITESPACE = Pattern.compile("(?=\\s+$)");
+
+	private static final Pattern PHONE_NUMBER = Pattern.compile("^\\(?(\\+?\\d{0,3})\\)?( |-)?\\d{7,10}$");
+
 	private static final int PASSWORD_LENGTH = 8;
 
 	public static List<String> validatePassword(String password) {
@@ -41,5 +44,9 @@ public class ValidationUtil {
 		}
 
 		return issues;
+	}
+
+	public static boolean isValidPhoneNumber(String phoneNumber) {
+		return PHONE_NUMBER.matcher(phoneNumber).matches();
 	}
 }

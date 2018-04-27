@@ -10,12 +10,8 @@ import javax.persistence.Table;
 @Table(name = "password_token")
 public class PasswordToken extends Token {
 
-	public PasswordToken() {
-		super();
-	}
-
-	public PasswordToken(String token, User user) {
-		super(token, user);
+	public PasswordToken(User user) {
+		super(user);
 	}
 
 }

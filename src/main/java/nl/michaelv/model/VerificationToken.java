@@ -10,12 +10,8 @@ import javax.persistence.Table;
 @Table(name = "verification_token")
 public class VerificationToken extends Token {
 
-	public VerificationToken() {
-		super();
-	}
-
-	public VerificationToken(String token, User user) {
-		super(token, user);
+	public VerificationToken(User user) {
+		super(user);
 	}
 
 }

@@ -1,16 +1,9 @@
 package nl.michaelv.model;
 
-import java.time.ZonedDateTime;
-
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.MappedSuperclass;
-import javax.persistence.OneToOne;
+import javax.persistence.*;
 import javax.validation.constraints.NotNull;
+import java.time.ZonedDateTime;
+import java.util.UUID;
 
 @MappedSuperclass
 public class Token {
@@ -29,21 +22,17 @@ public class Token {
 	private ZonedDateTime expirationDate;
 
 	@NotNull
-	@Column(name = "used")
-	private boolean used;
+	@Column(name = "confirmed")
+	private boolean confirmed;
 
 	@OneToOne(targetEntity = User.class, fetch = FetchType.EAGER)
 	@JoinColumn(nullable = false, name = "user_id")
 	private User user;
 
-	public Token() {
-		super();
-	}
-
-	public Token(String token, User user) {
-		this.token = token;
+	public Token(User user) {
+		this.token = generateToken();
 		this.user = user;
-		this.used = false;
+		this.confirmed = false;
 		this.expirationDate = ZonedDateTime.now().plusDays(1);
 	}
 
@@ -79,12 +68,20 @@ public class Token {
 		this.expirationDate = expirationDate;
 	}
 
-	public boolean isUsed() {
-		return used;
+	public boolean isConfirmed() {
+		return confirmed;
 	}
 
-	public void setUsed(boolean used) {
-		this.used = used;
+	public void setConfirmed(boolean confirmed) {
+		this.confirmed = confirmed;
+	}
+
+	public void confirm() {
+		this.confirmed = true;
+	}
+
+	private String generateToken() {
+		return UUID.randomUUID().toString();
 	}
 
 }

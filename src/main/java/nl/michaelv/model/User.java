@@ -1,24 +1,8 @@
 package nl.michaelv.model;
 
+import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
-
-import javax.persistence.CascadeType;
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.JoinColumn;
-import javax.persistence.JoinTable;
-import javax.persistence.ManyToMany;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.Pattern;
-
-import org.hibernate.validator.constraints.Email;
-import org.hibernate.validator.constraints.Length;
-import org.hibernate.validator.constraints.NotEmpty;
 
 @Entity
 @Table(name = "user")
@@ -30,32 +14,22 @@ public class User {
 	private int id;
 
 	@Column(name = "first_name")
-	@NotEmpty(message = "Please provide a first name")
 	private String firstName;
 
 	@Column(name = "middle_name")
 	private String middleName;
 
 	@Column(name = "last_name")
-	@NotEmpty(message = "Please provide a last name")
 	private String lastName;
 
 	@Column(name = "email")
-	@Email(message = "Please provide a valid email address")
-	@NotEmpty(message = "Please provide a valid email address")
 	private String email;
 
 	@Column(name = "phone")
-	@Pattern(regexp = "^\\(?(\\+?\\d{0,3})\\)?( |-)?\\d{7,10}$")
 	private String phone;
 
 	@Column(name = "password")
-	@Length(min = 5, message = "Your password must have at least 5 characters")
-	@NotEmpty(message = "Please provide a password")
 	private String password;
-
-	@Transient
-	private String passwordConfirmation;
 
 	@Column(name = "verified")
 	private boolean verified;
@@ -120,20 +94,16 @@ public class User {
 		this.password = password;
 	}
 
-	public String getPasswordConfirmation() {
-		return passwordConfirmation;
-	}
-
-	public void setPasswordConfirmation(String passwordConfirmation) {
-		this.passwordConfirmation = passwordConfirmation;
-	}
-
 	public boolean isVerified() {
 		return verified;
 	}
 
 	public void setVerified(boolean verified) {
 		this.verified = verified;
+	}
+
+	public void verify() {
+		this.verified = true;
 	}
 
 	public List<Role> getRoles() {
@@ -146,7 +116,7 @@ public class User {
 
 	public void addRole(Role role) {
 		if (this.roles == null) {
-			this.roles = new ArrayList<Role>();
+			this.roles = new ArrayList<>();
 		}
 		this.roles.add(role);
 	}

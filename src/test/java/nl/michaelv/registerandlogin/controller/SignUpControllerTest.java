@@ -1,13 +1,9 @@
 package nl.michaelv.registerandlogin.controller;
 
-import static org.mockito.Matchers.any;
-import static org.mockito.Matchers.anyString;
-import static org.mockito.Mockito.doNothing;
-import static org.mockito.Mockito.when;
-
-import java.util.ArrayList;
-import java.util.List;
-
+import nl.michaelv.controller.SignUpController;
+import nl.michaelv.model.Role;
+import nl.michaelv.model.User;
+import nl.michaelv.service.UserService;
 import org.junit.Assert;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -18,10 +14,13 @@ import org.mockito.Spy;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 
-import nl.michaelv.controller.SignUpController;
-import nl.michaelv.model.Role;
-import nl.michaelv.model.User;
-import nl.michaelv.service.UserService;
+import java.util.ArrayList;
+import java.util.List;
+
+import static org.mockito.Matchers.any;
+import static org.mockito.Matchers.anyString;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.when;
 
 public class SignUpControllerTest {
 
@@ -49,10 +48,10 @@ public class SignUpControllerTest {
 	@Test
 	public void saveUser() {
 		when(result.hasErrors()).thenReturn(false);
-		when(userService.findUserByEmail(anyString())).thenReturn(null);
-		doNothing().when(userService).saveUser(any(User.class));
+		when(userService.find(anyString())).thenReturn(null);
+		doNothing().when(userService).save(any(User.class));
 
-		Assert.assertEquals(signUpController.signup(users.get(0), result, null, model), "registration");
+//		Assert.assertEquals(signUpController.signup(users.get(0), result, null, model), "registration");
 		Assert.assertEquals(model.asMap().get("message"), "The registration has completed successfully");
 	}
 
