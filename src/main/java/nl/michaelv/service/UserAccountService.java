@@ -6,11 +6,14 @@ import nl.michaelv.model.forms.SignupForm;
 import nl.michaelv.repository.RoleRepository;
 import nl.michaelv.repository.UserRepository;
 import nl.michaelv.util.RoleUtil;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
+
+import javax.validation.Valid;
 
 @Service("userService")
 public class UserAccountService implements UserService {

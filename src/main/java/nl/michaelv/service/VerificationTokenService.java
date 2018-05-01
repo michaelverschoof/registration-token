@@ -4,9 +4,11 @@ import nl.michaelv.model.Token;
 import nl.michaelv.model.User;
 import nl.michaelv.model.VerificationToken;
 import nl.michaelv.repository.VerificationTokenRepository;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import javax.validation.Valid;
 import java.util.List;
 
 @Service("verificationTokenService")

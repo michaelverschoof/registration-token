@@ -1,13 +1,16 @@
 package nl.michaelv.service;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
+
 public interface MailService {
 
-	public void sendVerificationMail(String recipient, String url);
+	public void sendVerificationMail(@Email String recipient, @NotBlank String url);
 
-	public void sendVerifiedMail(String recipient);
+	public void sendVerifiedMail(@Email String recipient);
 
-	public void sendForgotPasswordMail(String recipient, String url);
+	public void sendForgotPasswordMail(@Email String recipient, @NotBlank String url);
 
-	public void sendForgotPasswordCompletedMail(String recipient);
+	public void sendForgotPasswordCompletedMail(@Email String recipient);
 
 }

@@ -2,6 +2,9 @@ package nl.michaelv.service;
 
 import nl.michaelv.model.User;
 import nl.michaelv.model.forms.SignupForm;
+import org.hibernate.validator.constraints.NotBlank;
+
+import javax.validation.Valid;
 
 public interface UserService {
 

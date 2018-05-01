@@ -2,6 +2,7 @@ package nl.michaelv.registerandlogin.service;
 
 import nl.michaelv.model.Role;
 import nl.michaelv.model.User;
+import nl.michaelv.model.forms.SignupForm;
 import nl.michaelv.repository.RoleRepository;
 import nl.michaelv.repository.UserRepository;
 import nl.michaelv.service.UserAccountService;
@@ -19,14 +20,16 @@ import org.springframework.test.context.junit4.SpringRunner;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+import static org.mockito.Matchers.any;
 import static org.mockito.Mockito.when;
 
 @RunWith(SpringRunner.class)
-public class UserServiceImplTest {
+public class UserAccountServiceTest {
 
 	@TestConfiguration
 	static class UserServiceImplTestContextConfiguration {
-
 		@Bean
 		public UserService userService() {
 			return new UserAccountService();
@@ -45,32 +48,61 @@ public class UserServiceImplTest {
 	@MockBean
 	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
+	private User user;
+
 	@Before
-	public void setUp() {
-		User user = getUser();
+	public void before() {
+		user = getUser();
 		when(userRepository.findByEmail(user.getEmail())).thenReturn(user);
-		when(userRepository.save(user)).thenReturn(user);
+		when(userRepository.save(any(User.class))).thenReturn(user);
+		when(userRepository.existsByEmail(user.getEmail())).thenReturn(true);
 
 		Role role = getRole();
 		when(roleRepository.findByName("USER")).thenReturn(role);
 	}
 
 	@Test
-	public void findUserByEmail() {
-		String email = "user1@someprovider.com";
-		User found = userService.find(email);
-
-		assertThat(found.getEmail()).isEqualTo(email);
+	public void findByEmail() {
+		User found = userService.find("user1@someprovider.com");
+		assertNotNull(found);
+		assertThat(found.getFirstName()).isEqualTo("User1");
 		assertThat(hasRole(found, "USER")).isEqualTo(true);
 	}
 
 	@Test
-	public void findUserByEmail_NotFound() {
-		String email = "notexisting@someprovider.com";
-		User found = userService.find(email);
-
-		assertThat(found).isEqualTo(null);
+	public void findByEmailWithUnknownValue() {
+		User found = userService.find("other@someprovider.com");
+		assertNull(found);
 	}
+
+	@Test
+	public void existsByEmail() {
+		boolean found = userService.exists("user1@someprovider.com");
+		assertThat(found).isTrue();
+	}
+
+	@Test
+	public void existsByEmailWithUnknownValue() {
+		boolean found = userService.exists("other@someprovider.com");
+		assertThat(found).isFalse();
+	}
+
+	@Test
+	public void createFromForm() {
+		User saved = userService.create(getSignupForm());
+		assertNotNull(saved);
+		assertThat(saved.getFirstName()).isEqualTo("User1");
+		assertThat(hasRole(saved, "USER")).isEqualTo(true);
+	}
+
+	@Test
+	public void createFromFormWithInvalidValue() {
+//		SignupForm form = getSignupForm();
+//		form.setEmail("");
+//		User saved = userService.create(form);
+//		assertNull(saved);
+	}
+
 
 	private User getUser() {
 		User u = new User();
@@ -84,6 +116,18 @@ public class UserServiceImplTest {
 		u.addRole(getRole());
 
 		return u;
+	}
+
+	private SignupForm getSignupForm() {
+		SignupForm form = new SignupForm();
+		form.setFirstName("User1");
+		form.setMiddleName("von");
+		form.setLastName("Lastname");
+		form.setEmail("user1@someprovider.com");
+		form.setPassword("123456");
+		form.setPasswordConfirmation("123456");
+
+		return form;
 	}
 
 	private Role getRole() {

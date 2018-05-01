@@ -1,5 +1,7 @@
 package nl.michaelv.service;
 
+import org.hibernate.validator.constraints.Email;
+import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.stereotype.Service;
 
 @Service("mailService")
@@ -9,35 +11,35 @@ public class TextualMailService implements MailService {
 	// @Autowired
 	// private JavaMailSender mailSender;
 
-	public void sendVerificationMail(String recipient, String url) {
+	public void sendVerificationMail(@Email String recipient, @NotBlank String url) {
 		String subject = "Email verification";
 		String message = "Please verify your email address (" + recipient + ")." + "\n" + url;
 
 		sendMail(recipient, subject, message);
 	}
 
-	public void sendVerifiedMail(String recipient) {
+	public void sendVerifiedMail(@Email String recipient) {
 		String subject = "Email verified";
 		String message = "Thank you for verifying your email address (" + recipient + ").";
 
 		sendMail(recipient, subject, message);
 	}
 
-	public void sendForgotPasswordMail(String recipient, String url) {
+	public void sendForgotPasswordMail(@Email String recipient, @NotBlank String url) {
 		String subject = "Forgot password email verification";
 		String message = "Please verify your email address (" + recipient + ") for your password reset." + "\n" + url;
 
 		sendMail(recipient, subject, message);
 	}
 
-	public void sendForgotPasswordCompletedMail(String recipient) {
+	public void sendForgotPasswordCompletedMail(@Email String recipient) {
 		String subject = "Forgot password completed";
 		String message = "Your password has been altered. You can now log in using your new password.";
 
 		sendMail(recipient, subject, message);
 	}
 
-	private void sendMail(String recipient, String subject, String message) {
+	private void sendMail(@Email String recipient, @NotBlank String subject, @NotBlank String message) {
 		// TODO: Remove this when enabling mailing of the token
 		System.out.println("Email:\nTo : " + recipient + ",\nSubject : " + subject + "\nMessage : " + message);
 
