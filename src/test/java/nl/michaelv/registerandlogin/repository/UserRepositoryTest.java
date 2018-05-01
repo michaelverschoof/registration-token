@@ -1,7 +1,11 @@
 package nl.michaelv.registerandlogin.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.*;
 
+import nl.michaelv.model.PasswordToken;
+import org.junit.After;
+import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,58 +21,53 @@ import nl.michaelv.repository.UserRepository;
 @DataJpaTest
 public class UserRepositoryTest {
 
-	@Autowired
-	private TestEntityManager entityManager;
+	private static final String EMAIL = "some.user@provider.com";
+	private static final String OTHER = "other.email@provider.com";
 
 	@Autowired
-	private UserRepository repo;
+	private UserRepository userRepository;
+
+	private User user;
+
+	@Before
+	public void before() {
+		user = new User();
+		user.setFirstName("Some");
+		user.setLastName("User");
+		user.setEmail(EMAIL);
+		user.setVerified(true);
+		user.setPassword("123");
+		user.setPhone("06123456789");
+		user = userRepository.save(user);
+	}
+
+	@After
+	public void after() {
+		userRepository.deleteAll();
+	}
+
 
 	@Test
 	public void findUserByEmail() {
-		// Given
-		User user = getUser();
-		entityManager.merge(user);
-		entityManager.flush();
-
-		// When
-		User found = repo.findByEmail(user.getEmail());
-
-		// Then
-		assertThat(found.getFirstName()).isEqualTo(user.getFirstName());
-		assertThat(found.getMiddleName()).isEqualTo(user.getMiddleName());
-		assertThat(found.getLastName()).isEqualTo(user.getLastName());
-		assertThat(found.getEmail()).isEqualTo(user.getEmail());
+		User user = userRepository.findByEmail(EMAIL);
+		assertNotNull(user);
+		assertTrue(user.getFirstName().equals("Some"));
+		assertTrue(user.getLastName().equals("User"));
 	}
 
 	@Test
-	public void findUserByEmail_NotFound() {
-		// When
-		User found = repo.findByEmail("notexisting@someprovider.com");
-
-		// Then
-		assertThat(found).isEqualTo(null);
+	public void findUserByEmailWithUnknownValue() {
+		User user = userRepository.findByEmail(OTHER);
+		assertNull(user);
 	}
 
-	private User getUser() {
-		User u = new User();
-		u.setId(1);
-		u.setFirstName("User1");
-		u.setMiddleName("von");
-		u.setLastName("Lastname");
-		u.setEmail("user1@someprovider.com");
-		u.setPassword("123456");
-		u.setPasswordConfirmation("123456");
-		u.setVerified(true);
-		u.addRole(getRole());
-
-		return u;
+	@Test
+	public void userExistsByEmail() {
+		assertTrue(userRepository.existsByEmail(EMAIL));
 	}
 
-	private Role getRole() {
-		Role r = new Role();
-		r.setId(1);
-		r.setName("USER");
-
-		return r;
+	@Test
+	public void userExistsByEmailWithUnknownValue() {
+		assertFalse(userRepository.existsByEmail(OTHER));
 	}
 }
