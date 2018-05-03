@@ -1,10 +1,13 @@
 package nl.michaelv.model;
 
+import lombok.Data;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
+@Data
 @MappedSuperclass
 public class Token {
 
@@ -29,51 +32,13 @@ public class Token {
 	@JoinColumn(nullable = false, name = "user_id")
 	private User user;
 
+	private static final long EXPIRATION_DAYS = 1;
+
 	public Token(User user) {
 		this.token = generateToken();
 		this.user = user;
 		this.confirmed = false;
-		this.expirationDate = ZonedDateTime.now().plusDays(1);
-	}
-
-	public int getId() {
-		return id;
-	}
-
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getToken() {
-		return token;
-	}
-
-	public void setToken(String token) {
-		this.token = token;
-	}
-
-	public User getUser() {
-		return user;
-	}
-
-	public void setUser(User user) {
-		this.user = user;
-	}
-
-	public ZonedDateTime getExpirationDate() {
-		return expirationDate;
-	}
-
-	public void setExpirationDate(ZonedDateTime expirationDate) {
-		this.expirationDate = expirationDate;
-	}
-
-	public boolean isConfirmed() {
-		return confirmed;
-	}
-
-	public void setConfirmed(boolean confirmed) {
-		this.confirmed = confirmed;
+		this.expirationDate = ZonedDateTime.now().plusDays(EXPIRATION_DAYS);
 	}
 
 	public void confirm() {
