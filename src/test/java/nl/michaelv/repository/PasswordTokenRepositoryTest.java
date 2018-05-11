@@ -1,4 +1,4 @@
-package nl.michaelv.registerandlogin.repository;
+package nl.michaelv.repository;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.Assert.assertNotNull;
