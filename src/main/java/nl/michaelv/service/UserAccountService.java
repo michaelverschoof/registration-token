@@ -6,14 +6,12 @@ import nl.michaelv.model.forms.SignupForm;
 import nl.michaelv.repository.RoleRepository;
 import nl.michaelv.repository.UserRepository;
 import nl.michaelv.util.RoleUtil;
-import org.hibernate.validator.constraints.NotBlank;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
-
-import javax.validation.Valid;
 
 @Service("userService")
 public class UserAccountService implements UserService {
@@ -69,18 +67,14 @@ public class UserAccountService implements UserService {
 		boolean credentialsNonExpired = true;
 		boolean accountNonLocked = true;
 
-		try {
-			User user = userRepository.findByEmail(email);
-			if (user == null) {
-				throw new UsernameNotFoundException("No user found with email: " + email);
-			}
-
-			return new org.springframework.security.core.userdetails.User(user.getEmail(),
-					user.getPassword().toLowerCase(), user.isVerified(), accountNonExpired, credentialsNonExpired,
-					accountNonLocked, RoleUtil.getAuthorities(user.getRoles()));
-		} catch (Exception e) {
-			throw new RuntimeException(e);
+		User user = userRepository.findByEmail(email);
+		if (user == null) {
+			throw new UsernameNotFoundException("No user found with email: " + email);
 		}
+
+		return new org.springframework.security.core.userdetails.User(user.getEmail(),
+				user.getPassword().toLowerCase(), user.isVerified(), accountNonExpired, credentialsNonExpired,
+				accountNonLocked, RoleUtil.getAuthorities(user.getRoles()));
 	}
 
 	private Role getDefaultRole() {

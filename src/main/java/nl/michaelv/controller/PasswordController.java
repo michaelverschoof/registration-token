@@ -1,8 +1,8 @@
 package nl.michaelv.controller;
 
-import nl.michaelv.model.PasswordToken;
 import nl.michaelv.model.User;
 import nl.michaelv.model.forms.PasswordForm;
+import nl.michaelv.model.tokens.Token;
 import nl.michaelv.service.TextualMailService;
 import nl.michaelv.service.TokenService;
 import nl.michaelv.service.UserService;
@@ -20,7 +20,6 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
-import java.time.ZonedDateTime;
 import java.util.List;
 
 @Controller
@@ -54,13 +53,13 @@ public class PasswordController {
 			return "forgot-password";
 		}
 
-		PasswordToken passwordToken = (PasswordToken) passwordTokenService.create(user);
+		Token passwordToken = passwordTokenService.create(user);
 		if (passwordToken == null) {
 			model.addAttribute("error", "The password verification token could not be created");
 			return "forgot-password";
 		}
 
-		String url = request.getRequestURI() + "/verify/" + passwordToken.getToken();
+		String url = request.getRequestURI() + "/verify/" + passwordToken.token();
 		mailService.sendForgotPasswordMail(user.getEmail(), url);
 		model.addAttribute("message", "A forgot password link has been sent to: " + user.getEmail());
 
@@ -69,23 +68,23 @@ public class PasswordController {
 
 	@GetMapping("/forgot-password/verify/{token}")
 	public String verifyForgotPassword(@PathVariable String token, RedirectAttributes redirectAttributes) {
-		PasswordToken passwordToken = (PasswordToken) passwordTokenService.findByToken(token);
+		Token passwordToken = passwordTokenService.findByToken(token);
 		if (passwordToken == null) {
 			redirectAttributes.addFlashAttribute("error", "The used token does not exist");
 			return "redirect:/";
 		}
 
-		if (passwordToken.isConfirmed()) {
+		if (passwordToken.confirmed()) {
 			redirectAttributes.addFlashAttribute("error", "This token has already been used");
 			return "redirect:/";
 		}
 
-		if (passwordToken.getExpirationDate().isBefore(ZonedDateTime.now())) {
+		if (passwordToken.expired()) {
 			redirectAttributes.addFlashAttribute("error", "This token has expired");
 			return "redirect:/";
 		}
 
-		User user = passwordToken.getUser();
+		User user = passwordToken.user();
 		if (!user.isVerified()) {
 			redirectAttributes.addFlashAttribute("error", "This user is not yet verified");
 			return "redirect:/";

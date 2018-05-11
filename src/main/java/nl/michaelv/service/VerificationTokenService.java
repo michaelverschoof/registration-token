@@ -1,14 +1,12 @@
 package nl.michaelv.service;
 
-import nl.michaelv.model.Token;
 import nl.michaelv.model.User;
-import nl.michaelv.model.VerificationToken;
+import nl.michaelv.model.tokens.Token;
+import nl.michaelv.model.tokens.VerificationToken;
 import nl.michaelv.repository.VerificationTokenRepository;
-import org.hibernate.validator.constraints.NotBlank;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import javax.validation.Valid;
 import java.util.List;
 
 @Service("verificationTokenService")
@@ -17,11 +15,11 @@ public class VerificationTokenService implements TokenService {
 	@Autowired
 	private VerificationTokenRepository repository;
 
-	public VerificationToken findByToken(String token) {
+	public Token findByToken(String token) {
 		return this.repository.findByToken(token);
 	}
 
-	public List<VerificationToken> findByUser(User user) {
+	public List<Token> findByUser(User user) {
 		return this.repository.findByUser(user);
 	}
 

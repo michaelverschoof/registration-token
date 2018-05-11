@@ -1,6 +1,7 @@
 package nl.michaelv.repository;
 
 import nl.michaelv.model.User;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 

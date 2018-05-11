@@ -1,7 +1,12 @@
 package nl.michaelv.registerandlogin.repository;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import nl.michaelv.model.Role;
 import nl.michaelv.repository.RoleRepository;
+
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -9,8 +14,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -37,7 +40,7 @@ public class RoleRepositoryTest {
 	public void findRoleByName() {
 		Role role = roleRepository.findByName("ROLE");
 		assertNotNull(role);
-		assertTrue(role.getName().equals("ROLE"));
+		assertThat(role.getName()).isEqualTo("ROLE");
 	}
 
 	@Test

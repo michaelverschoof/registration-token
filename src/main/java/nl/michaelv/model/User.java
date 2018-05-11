@@ -1,12 +1,24 @@
 package nl.michaelv.model;
 
-import lombok.Data;
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
+import javax.persistence.Table;
 
-import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
+import lombok.Setter;
+import org.hibernate.validator.constraints.NotEmpty;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "user")
 public class User {
@@ -25,12 +37,14 @@ public class User {
 	@Column(name = "last_name")
 	private String lastName;
 
+	@NotEmpty
 	@Column(name = "email")
 	private String email;
 
 	@Column(name = "phone")
 	private String phone;
 
+	@NotEmpty
 	@Column(name = "password")
 	private String password;
 

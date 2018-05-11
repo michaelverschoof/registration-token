@@ -1,12 +1,17 @@
 package nl.michaelv.controller;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.validation.Valid;
+
 import nl.michaelv.model.User;
-import nl.michaelv.model.VerificationToken;
 import nl.michaelv.model.forms.SignupForm;
+import nl.michaelv.model.tokens.Token;
 import nl.michaelv.service.MailService;
 import nl.michaelv.service.TokenService;
 import nl.michaelv.service.UserService;
 import nl.michaelv.util.ValidationUtil;
+
+import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -17,13 +22,8 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.servlet.http.HttpServletRequest;
-import javax.validation.Valid;
-import java.time.ZonedDateTime;
-import java.util.List;
-
 @Controller
-public class SignUpController {
+public class SignupController {
 
 	@Autowired
 	private UserService userService;
@@ -72,14 +72,14 @@ public class SignUpController {
 				return "signup";
 			}
 
-			VerificationToken verificationToken = (VerificationToken) verificationTokenService.create(user);
+			Token verificationToken = verificationTokenService.create(user);
 			if (verificationToken == null) {
 				userService.delete(user);
 				result.reject(null, "The registration has failed for some reason...");
 				return "signup";
 			}
 
-			String url = request.getRequestURI() + "/verify/" + verificationToken.getToken();
+			String url = request.getRequestURI() + "/verify/" + verificationToken.token();
 			mailService.sendVerificationMail(user.getEmail(), url);
 
 			model.addAttribute("message", "The registration has completed successfully. "
@@ -92,24 +92,24 @@ public class SignUpController {
 
 	@GetMapping("/signup/verify/{token}")
 	public String verifySignup(@PathVariable String token, final RedirectAttributes redirectAttributes) {
-		VerificationToken verificationToken = (VerificationToken) verificationTokenService.findByToken(token);
+		Token verificationToken = verificationTokenService.findByToken(token);
 
 		if (token == null) {
 			redirectAttributes.addFlashAttribute("error", "The used token does not exist");
 			return "redirect:/";
 		}
 
-		if (verificationToken.isConfirmed()) {
+		if (verificationToken.confirmed()) {
 			redirectAttributes.addFlashAttribute("error", "This token has already been used");
 			return "redirect:/";
 		}
 
-		if (verificationToken.getExpirationDate().isBefore(ZonedDateTime.now())) {
+		if (verificationToken.expired()) {
 			redirectAttributes.addFlashAttribute("error", "This token has expired");
 			return "redirect:/";
 		}
 
-		User user = verificationToken.getUser();
+		User user = verificationToken.user();
 		if (user.isVerified()) {
 			redirectAttributes.addFlashAttribute("error", "This user has already been verified");
 			return "redirect:/";

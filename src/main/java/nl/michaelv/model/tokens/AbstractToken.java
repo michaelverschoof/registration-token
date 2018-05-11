@@ -1,15 +1,16 @@
-package nl.michaelv.model;
+package nl.michaelv.model.tokens;
 
-import lombok.Data;
+import lombok.Getter;
+import nl.michaelv.model.User;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotNull;
 import java.time.ZonedDateTime;
 import java.util.UUID;
 
-@Data
+@Getter
 @MappedSuperclass
-public class Token {
+public abstract class AbstractToken implements Token {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.AUTO)
@@ -34,15 +35,38 @@ public class Token {
 
 	private static final long EXPIRATION_DAYS = 1;
 
-	public Token(User user) {
+	public AbstractToken(User user) {
 		this.token = generateToken();
 		this.user = user;
 		this.confirmed = false;
 		this.expirationDate = ZonedDateTime.now().plusDays(EXPIRATION_DAYS);
 	}
 
+	public AbstractToken(String token, User user) {
+		this.token = token;
+		this.user = user;
+		this.confirmed = false;
+		this.expirationDate = ZonedDateTime.now().plusDays(EXPIRATION_DAYS);
+	}
+
+	public String token() {
+		return this.token;
+	}
+
+	public User user() {
+		return this.user;
+	}
+
 	public void confirm() {
 		this.confirmed = true;
+	}
+
+	public boolean confirmed() {
+		return this.confirmed;
+	}
+
+	public boolean expired() {
+		return this.getExpirationDate().isBefore(ZonedDateTime.now());
 	}
 
 	private String generateToken() {

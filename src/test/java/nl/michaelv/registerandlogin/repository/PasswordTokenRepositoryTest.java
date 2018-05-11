@@ -1,9 +1,16 @@
 package nl.michaelv.registerandlogin.repository;
 
-import nl.michaelv.model.PasswordToken;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.assertNull;
+
 import nl.michaelv.model.User;
+import nl.michaelv.model.tokens.PasswordToken;
+import nl.michaelv.model.tokens.Token;
 import nl.michaelv.repository.PasswordTokenRepository;
 import nl.michaelv.repository.UserRepository;
+
+import java.util.List;
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -11,10 +18,6 @@ import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
-import java.util.List;
-
-import static org.junit.Assert.*;
 
 @RunWith(SpringRunner.class)
 @DataJpaTest
@@ -27,6 +30,7 @@ public class PasswordTokenRepositoryTest {
 	private PasswordTokenRepository passwordRepository;
 
 	private User user;
+
 	private PasswordToken token;
 
 	@Before
@@ -40,9 +44,7 @@ public class PasswordTokenRepositoryTest {
 		user.setPhone("06123456789");
 		user = userRepository.save(user);
 
-		token = new PasswordToken(user);
-		token.setToken("myCustomTokenId");
-		passwordRepository.save(token);
+		passwordRepository.save(new PasswordToken("myCustomTokenId", user));
 	}
 
 	@After
@@ -53,34 +55,32 @@ public class PasswordTokenRepositoryTest {
 
 	@Test
 	public void findPasswordTokenByToken() {
-		PasswordToken token = passwordRepository.findByToken("myCustomTokenId");
+		PasswordToken token = (PasswordToken) passwordRepository.findByToken("myCustomTokenId");
 		assertNotNull(token);
-		assertTrue(token.getToken().equals("myCustomTokenId"));
-		assertTrue(token.getUser().getEmail().equals("some.user@provider.com"));
+		assertThat(token.getToken()).isEqualTo("myCustomTokenId");
+		assertThat(token.getUser().getEmail()).isEqualTo("some.user@provider.com");
 	}
 
 	@Test
 	public void findPasswordTokenByTokenWithUnknownValue() {
-		PasswordToken token = passwordRepository.findByToken("someNonExistingToken");
+		PasswordToken token = (PasswordToken) passwordRepository.findByToken("someNonExistingToken");
 		assertNull(token);
 	}
 
 	@Test
 	public void findPasswordTokensByUser() {
-		List<PasswordToken> tokens = passwordRepository.findByUser(user);
+		List<Token> tokens = passwordRepository.findByUser(user);
 		assertNotNull(tokens);
-		assertTrue(tokens.size() == 1);
-		assertTrue(tokens.get(0).getToken() == "myCustomTokenId");
+		assertThat(tokens.size()).isEqualTo(1);
+		assertThat(tokens.get(0).token()).isEqualTo("myCustomTokenId");
 
-		PasswordToken token2 = new PasswordToken(user);
-		token2.setToken("myOtherCustomTokenId");
-		passwordRepository.save(token2);
+		passwordRepository.save(new PasswordToken("myOtherCustomTokenId", user));
 
 		tokens = passwordRepository.findByUser(user);
 		assertNotNull(tokens);
-		assertTrue(tokens.size() == 2);
-		assertTrue(tokens.get(0).getToken().equals("myCustomTokenId"));
-		assertTrue(tokens.get(1).getToken().equals("myOtherCustomTokenId"));
+		assertThat(tokens.size()).isEqualTo(2);
+		assertThat(tokens.get(0).token()).isEqualTo("myCustomTokenId");
+		assertThat(tokens.get(1).token()).isEqualTo("myOtherCustomTokenId");
 	}
 
 	@Test
@@ -88,12 +88,13 @@ public class PasswordTokenRepositoryTest {
 		User user2 = new User();
 		user2.setFirstName("First");
 		user2.setLastName("Last");
+		user2.setEmail("other@provider.com");
 		user2.setVerified(true);
 		user2.setPassword("123");
 		user2.setPhone("06123456789");
 		user2 = userRepository.save(user2);
 
-		List<PasswordToken> tokens = passwordRepository.findByUser(user2);
-		assertTrue(tokens.size() == 0);
+		List<Token> tokens = passwordRepository.findByUser(user2);
+		assertThat(tokens.size()).isEqualTo(0);
 	}
 }
