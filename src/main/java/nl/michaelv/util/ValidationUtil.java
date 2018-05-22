@@ -4,7 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import org.springframework.beans.factory.annotation.Autowired;
+
 public class ValidationUtil {
+
+	@Autowired
+	private static MessageUtil messages;
 
 	private static final Pattern CONTAINS_NUMERIC = Pattern.compile("(?=.*[0-9])");
 	private static final Pattern CONTAINS_LOWERCASE = Pattern.compile("(?=.*[a-z])");
@@ -20,27 +25,27 @@ public class ValidationUtil {
 		ArrayList<String> issues = new ArrayList<>();
 
 		if (password == null || password.length() < PASSWORD_LENGTH) {
-			issues.add("The password must be at least " + PASSWORD_LENGTH + " characters long");
+			issues.add(messages.get("validation.password.min", PASSWORD_LENGTH));
 		}
 
 		if (!CONTAINS_NUMERIC.matcher(password).find()) {
-			issues.add("The password must contain at least one number");
+			issues.add(messages.get("validation.password.contain.number"));
 		}
 
 		if (!CONTAINS_LOWERCASE.matcher(password).find()) {
-			issues.add("The password must contain at least one lowercase letter");
+			issues.add(messages.get("validation.password.contain.lowercase"));
 		}
 
 		if (!CONTAINS_UPPERCASE.matcher(password).find()) {
-			issues.add("The password must contain at least one uppercase letter");
+			issues.add(messages.get("validation.password.contain.uppercase"));
 		}
 
 		if (!CONTAINS_SPECIAL.matcher(password).find()) {
-			issues.add("The password must contain at least one special character");
+			issues.add(messages.get("validation.password.contain.special"));
 		}
 
 		if (CONTAINS_WHITESPACE.matcher(password).find()) {
-			issues.add("The password must not contain any whitespace characters");
+			issues.add(messages.get("validation.password.no.whitespace"));
 		}
 
 		return issues;

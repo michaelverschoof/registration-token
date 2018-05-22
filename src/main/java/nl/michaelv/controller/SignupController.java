@@ -2,6 +2,7 @@ package nl.michaelv.controller;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
+import java.util.List;
 
 import nl.michaelv.model.User;
 import nl.michaelv.model.forms.SignupForm;
@@ -9,9 +10,9 @@ import nl.michaelv.model.tokens.Token;
 import nl.michaelv.service.MailService;
 import nl.michaelv.service.TokenService;
 import nl.michaelv.service.UserService;
+import nl.michaelv.util.MessageUtil;
 import nl.michaelv.util.ValidationUtil;
 
-import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Controller;
@@ -36,6 +37,9 @@ public class SignupController {
 	@Qualifier("verificationTokenService")
 	private TokenService verificationTokenService;
 
+	@Autowired
+	private static MessageUtil messages;
+
 	@GetMapping("/signup")
 	public String signup(Model model) {
 		SignupForm form = new SignupForm();
@@ -51,7 +55,7 @@ public class SignupController {
 
 		if (!result.hasErrors()) {
 			if (userService.exists(form.getEmail())) {
-				result.rejectValue("email", null, "There is already a user registered with the email provided");
+				result.rejectValue("email", null, messages.get("validation.user.exists"));
 				return "signup";
 			}
 
@@ -64,29 +68,27 @@ public class SignupController {
 			}
 
 			if (!form.getPassword().equals(form.getPasswordConfirmation())) {
-				result.rejectValue("password", null, "The passwords do not match");
+				result.rejectValue("passwordConfirmation", null, messages.get("validation.password.notequal"));
 				return "signup";
 			}
 
 			User user = userService.create(form);
 			if (user == null) {
-				result.reject(null, "The registration has failed for some reason...");
+				result.reject(null, messages.get("message.signup.fail"));
 				return "signup";
 			}
 
 			Token verificationToken = verificationTokenService.create(user);
 			if (verificationToken == null) {
 				userService.delete(user);
-				result.reject(null, "The registration has failed for some reason...");
+				result.reject(null, messages.get("message.signup.fail"));
 				return "signup";
 			}
 
 			String url = request.getRequestURI() + "/verify/" + verificationToken.token();
 			mailService.sendVerificationMail(user.getEmail(), url);
 
-			model.addAttribute("message", "The registration has completed successfully. "
-					+ "A verification email has been sent to " + user.getEmail());
-
+			model.addAttribute("message", messages.get("message.signup.success", user.getEmail()));
 			model.addAttribute("form", new SignupForm());
 		}
 
@@ -98,23 +100,23 @@ public class SignupController {
 		Token verificationToken = verificationTokenService.findByToken(token);
 
 		if (token == null) {
-			redirectAttributes.addFlashAttribute("error", "The used token does not exist");
+			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.notfound"));
 			return "redirect:/";
 		}
 
 		if (verificationToken.confirmed()) {
-			redirectAttributes.addFlashAttribute("error", "This token has already been used");
+			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.used"));
 			return "redirect:/";
 		}
 
 		if (verificationToken.expired()) {
-			redirectAttributes.addFlashAttribute("error", "This token has expired");
+			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.expired"));
 			return "redirect:/";
 		}
 
 		User user = verificationToken.user();
 		if (user.isVerified()) {
-			redirectAttributes.addFlashAttribute("error", "This user has already been verified");
+			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.verified"));
 			return "redirect:/";
 		}
 
@@ -125,14 +127,13 @@ public class SignupController {
 		User verified = userService.save(user);
 
 		if (verified == null) {
-			redirectAttributes.addFlashAttribute("error",
-					"The verification of the email address has failed for some reason...");
+			redirectAttributes.addFlashAttribute("error", messages.get("message.signup.verification.fail"));
 			return "redirect:/";
 		}
 
 		mailService.sendVerifiedMail(verified.getEmail());
 
-		redirectAttributes.addFlashAttribute("message", "Your email address has been verified and you can now log in");
+		redirectAttributes.addFlashAttribute("message", messages.get("message.signup.verification.success"));
 		return "redirect:/";
 	}
 

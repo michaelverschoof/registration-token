@@ -59,26 +59,26 @@ public class PasswordController {
 
 		// TODO: Forgot password form instead of an html basic form to enable validation and prepare for possible expansion
 		if (email == null || email.trim().isEmpty()) {
-			model.addAttribute("error", messages.get("passwordcontroller.email.empty"));
+			model.addAttribute("error", messages.get("validation.email.empty"));
 			return "forgot-password";
 		}
 
 		User user = userService.find(email);
 		if (user == null) {
-			model.addAttribute("error", messages.get("passwordcontroller.user.notfound", email));
+			model.addAttribute("error", messages.get("validation.user.notfound", email));
 			return "forgot-password";
 		}
 
 		Token passwordToken = passwordTokenService.create(user);
 		if (passwordToken == null) {
-			model.addAttribute("error", messages.get("passwordcontroller.token.notcreated"));
+			model.addAttribute("error", messages.get("validation.token.notcreated"));
 			return "forgot-password";
 		}
 
 		String url = request.getRequestURI() + "/verify/" + passwordToken.token();
 		mailService.sendForgotPasswordMail(user.getEmail(), url);
 
-		model.addAttribute("message", messages.get("passwordcontroller.token.sent", user.getEmail()));
+		model.addAttribute("message", messages.get("message.token.sent", user.getEmail()));
 
 		return "forgot-password";
 	}
@@ -87,23 +87,23 @@ public class PasswordController {
 	public String verifyForgotPassword(@PathVariable String token, RedirectAttributes redirectAttributes) {
 		Token passwordToken = passwordTokenService.findByToken(token);
 		if (passwordToken == null) {
-			redirectAttributes.addFlashAttribute("error", messages.get("passwordcontroller.token.notcreated"));
+			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.notfound"));
 			return "redirect:/";
 		}
 
 		if (passwordToken.confirmed()) {
-			redirectAttributes.addFlashAttribute("error", "This token has already been used");
+			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.used"));
 			return "redirect:/";
 		}
 
 		if (passwordToken.expired()) {
-			redirectAttributes.addFlashAttribute("error", "This token has expired");
+			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.expired"));
 			return "redirect:/";
 		}
 
 		User user = passwordToken.user();
 		if (!user.isVerified()) {
-			redirectAttributes.addFlashAttribute("error", "This user is not yet verified");
+			redirectAttributes.addFlashAttribute("error", messages.get("validation.user.notverified"));
 			return "redirect:/";
 		}
 
@@ -117,7 +117,7 @@ public class PasswordController {
 	@GetMapping("/set-password")
 	public String changePassword(Model model, final RedirectAttributes redirectAttributes) {
 		if (!model.containsAttribute("user")) {
-			redirectAttributes.addFlashAttribute("error", "The user could not be obtained");
+			redirectAttributes.addFlashAttribute("error", messages.get("validation.user.notinmodel"));
 			return "redirect:/";
 		}
 
@@ -131,7 +131,7 @@ public class PasswordController {
 	public String changePassword(@Valid @ModelAttribute PasswordForm form, User user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 
 		if (!form.getPassword().equals(form.getPasswordConfirmation())) {
-			result.rejectValue("password", null, "The passwords do not match");
+			result.rejectValue("password", null, messages.get("validation.password.notequal"));
 			return "set-password";
 		}
 
@@ -147,14 +147,12 @@ public class PasswordController {
 
 		User saved = userService.changePassword(user);
 		if (saved == null) {
-			redirectAttributes.addFlashAttribute("error", "The password change did not succeed for unknown reasons");
+			redirectAttributes.addFlashAttribute("error", messages.get("message.password.change.fail"));
 			return "redirect:/";
 		}
 
 		mailService.sendForgotPasswordCompletedMail(saved.getEmail());
-
-		redirectAttributes.addFlashAttribute("message",
-				"Your password has successfully been altered. You can now log in.");
+		redirectAttributes.addFlashAttribute("message", messages.get("message.password.change.success"));
 		return "redirect:/";
 	}
 

@@ -22,7 +22,7 @@ public class MessageUtil {
 	}
 
 	public String get(String label, Object[] args) {
-		return messageSource.getMessage("passwordcontroller.email.empty", args, LocaleContextHolder.getLocale());
+		return messageSource.getMessage(label, args, LocaleContextHolder.getLocale());
 	}
 
 }
