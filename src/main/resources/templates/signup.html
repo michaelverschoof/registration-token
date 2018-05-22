@@ -15,56 +15,56 @@
 	<header th:replace="fragments/main :: header"></header>
 
 	<main>
-		<h1>Sign up for the application</h1>
+		<h1 th:text="#{signup.header}">Title</h1>
 		<form th:action="@{/signup}" th:object="${form}" method="post" autocomplete="off">
 			<p th:if="${message}" th:utext="${message}" class="message">Message</p>
 
-			<h2>Join the rest of us</h2>
+			<h2 th:text="#{signup.header.sub}">Subtitle</h2>
 			<fieldset class="inline first">
-				<label for="firstName"><i class="fa fa-user"></i></label
-				><input th:field="*{firstName}" th:errorclass="error" type="text" placeholder="First name" autocomplete="off" />
+				<label th:for="${#ids.next('firstName')}"><i class="fa fa-user"></i></label
+				><input th:field="*{firstName}" th:errorclass="error" type="text" th:placeholder="#{form.placeholder.name.first}" placeholder="First" autocomplete="off" />
 				<p th:if="${#fields.hasErrors('firstName')}" th:errors="*{firstName}" class="error">
 					Error message
 				</p>
 			</fieldset
 			><fieldset class="inline middle">
-				<input th:field="*{middleName}" type="text" placeholder="" autocomplete="off" />
+				<input th:field="*{middleName}" type="text" th:placeholder="#{form.placeholder.name.middle}" placeholder="" autocomplete="off" />
 			</fieldset
 			><fieldset class="inline last">
-				<input th:field="*{lastName}" th:errorclass="error" type="text" placeholder="Last name" autocomplete="off" />
+				<input th:field="*{lastName}" th:errorclass="error" type="text" th:placeholder="#{form.placeholder.name.last}" placeholder="Last" autocomplete="off" />
 				<p th:if="${#fields.hasErrors('lastName')}" th:errors="*{lastName}" class="error">
 					Error message
 				</p>
 			</fieldset>
 			<fieldset>
-				<label for="email"><i class="fa fa-at"></i></label
-				><input th:field="*{email}" th:errorclass="error" type="email" placeholder="Email addres" autocomplete="off" />
+				<label th:for="${#ids.next('email')}"><i class="fa fa-at"></i></label
+				><input th:field="*{email}" th:errorclass="error" type="email" th:placeholder="#{form.placeholder.email}" placeholder="Email" autocomplete="off" />
 				<p th:if="${#fields.hasErrors('email')}" th:errors="*{email}" class="error">
 					Error message
 				</p>
 			</fieldset>
 			<fieldset>
-				<label for="phone"><i class="fa fa-phone"></i></label
-				><input th:field="*{phone}" th:errorclass="error" type="tel" placeholder="Telephone number" autocomplete="off" />
+				<label th:for="${#ids.next('phone')}"><i class="fa fa-phone"></i></label
+				><input th:field="*{phone}" th:errorclass="error" type="tel" th:placeholder="#{form.placeholder.phone}" placeholder="Phone" autocomplete="off" />
 				<p th:if="${#fields.hasErrors('phone')}" th:errors="*{phone}" class="error">
 					Error message
 				</p>
 			</fieldset>
 			<fieldset class="inline password">
-				<label for="password"><i class="fa fa-key"></i></label
-				><input th:field="*{password}" th:errorclass="error" type="password" placeholder="Password" autocomplete="new-password" />
+				<label th:for="${#ids.next('password')}"><i class="fa fa-key"></i></label
+				><input th:field="*{password}" th:errorclass="error" type="password" th:placeholder="#{form.placeholder.password}" placeholder="Password" autocomplete="new-password" />
 				<p th:if="${#fields.hasErrors('password')}" th:errors="*{password}" class="error">
 					Error message
 				</p>
 			</fieldset
 			><fieldset class="inline confirm">
-				<input th:field="*{passwordConfirmation}" th:errorclass="error" type="password" placeholder="Confirm password" autocomplete="new-password" />
+				<input th:field="*{passwordConfirmation}" th:errorclass="error" type="password" th:placeholder="#{form.placeholder.password.confirm}" placeholder="Confirm" autocomplete="new-password" />
 				<p th:if="${#fields.hasErrors('passwordConfirmation')}" th:errors="*{passwordConfirmation}" class="error">
 					Error message
 				</p>
 			</fieldset>
 			<fieldset>
-				<button type="submit" name="submit" value="signup">Sign up</button>
+				<button type="submit" name="submit" value="signup" th:text="#{signup.form.submit}">Submit</button>
 			</fieldset>
 		</form>
 	</main>

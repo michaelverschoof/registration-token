@@ -18,6 +18,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -44,8 +45,9 @@ public class SignupController {
 	}
 
 	@PostMapping("/signup")
-	public String signup(@Valid SignupForm form, BindingResult result, HttpServletRequest request, Model model) {
+	public String signup(@Valid @ModelAttribute SignupForm form, BindingResult result, HttpServletRequest request, Model model) {
 		model.addAttribute("tab", "signup");
+		model.addAttribute("form", form);
 
 		if (!result.hasErrors()) {
 			if (userService.exists(form.getEmail())) {
@@ -84,7 +86,8 @@ public class SignupController {
 
 			model.addAttribute("message", "The registration has completed successfully. "
 					+ "A verification email has been sent to " + user.getEmail());
-			model.addAttribute("user", new User());
+
+			model.addAttribute("form", new SignupForm());
 		}
 
 		return "signup";

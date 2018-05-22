@@ -1,24 +1,27 @@
 package nl.michaelv.model.forms;
 
+import javax.validation.constraints.Max;
+import javax.validation.constraints.Min;
+
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotBlank;
-
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Min;
 
 @Getter
 @Setter
 public class PasswordForm {
 
-	@NotBlank(message = "Your password needs to contain some characters")
-	@Min(value = 8, message = "Your password should at least be 8 characters long")
-	@Max(value = 150, message = "Your password should not be longer than 150 characters")
+	private static final int MIN_LENGTH = 8;
+	private static final int MAX_LENGTH = 150;		// TODO: Useful number for max
+
+	@NotBlank(message = "{passwordform.password.blank}")
+	@Min(value = MIN_LENGTH, message = "{passwordform.password.min}")
+	@Max(value = MAX_LENGTH, message = "{passwordform.password.max}")
 	private String password;
 
-	@NotBlank(message = "Your password confirmation needs to contain some characters")
-	@Min(value = 8, message = "Your password confirmation should at least be 8 characters long")
-	@Max(value = 150, message = "Your password confirmation should not be longer than 150 characters")
+	@NotBlank(message = "{passwordform.confirm.blank}")
+	@Min(value = MIN_LENGTH, message = "{passwordform.confirm.min}")
+	@Max(value = MAX_LENGTH, message = "{passwordform.confirm.max}")
 	private String passwordConfirmation;
 
 }

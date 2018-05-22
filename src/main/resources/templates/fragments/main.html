@@ -9,8 +9,8 @@
 		</h1>
 		<nav>
 			<ul th:if="${tab == 'login' || tab == 'signup'}">
-				<li><a th:href="@{/}" href="/" th:class="${tab == 'login'} ? 'active' : null">Log in</a></li>
-				<li><a th:href="@{/signup}" href="/signup" th:class="${tab == 'signup'} ? 'active' : null">Sign up</a></li>
+				<li><a th:href="@{/}" href="/" th:class="${tab == 'login'} ? 'active' : null" th:text="#{header.menu.login}">Log in</a></li>
+				<li><a th:href="@{/signup}" href="/signup" th:class="${tab == 'signup'} ? 'active' : null" th:text="#{header.menu.signup}">Sign up</a></li>
 			</ul>
 			<ul th:unless="${tab == 'login' || tab == 'signup'}">
 				<li><a th:href="@{/logout}" href="/logout"><i class="fa fa-sign-out-alt"></i></a></li>
@@ -19,7 +19,7 @@
 	</header>
 
 	<footer th:fragment="footer">
-		<a href="https://www.michaelv.nl" class="copyright">Copyright © 2018 MichaelV.nl</a>
+		<a href="https://www.michaelv.nl" class="copyright" th:utext="#{footer.copyright}">Copyright</a>
 	</footer>
 
 </body>

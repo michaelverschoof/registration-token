@@ -16,29 +16,30 @@
 	<header th:replace="fragments/main :: header"></header>
 
 	<main>
-		<h1>Log in to the application</h1>
+		<h1 th:text="#{login.header}">Title</h1>
 		<form th:action="@{/login}" method="post" class="login small">
+			<p th:if="${session.SPRING_SECURITY_LAST_EXCEPTION}" th:text="${session.SPRING_SECURITY_LAST_EXCEPTION.message}" class="error">Error</p>
 			<p th:if="${message}" th:text="${message}" class="message">Message</p>
 			<p th:if="${error}" th:text="${error}" class="error">Error</p>
 			
-			<h2>Proof that you're allowed here...</h2>
+			<h2 th:text="#{login.header.sub}">Subtitle</h2>
 			<fieldset>
 				<label for="email"><i class="fa fa-at"></i></label
-				><input type="email" id="email" name="email" placeholder="Email addres" />
+				><input type="email" id="email" name="email" th:placeholder="#{form.placeholder.email}" placeholder="Email" />
 			</fieldset>
 			<fieldset>
 				<label for="password"><i class="fa fa-key"></i></label
-				><input type="password" id="password" name="password" placeholder="Password" />
-				<a th:href="@{/forgot-password}" href="/forgot-password" class="forgot">Forgot?</a>
+				><input type="password" id="password" name="password" th:placeholder="#{form.placeholder.password}" placeholder="Password" />
+				<a th:href="@{/forgot-password}" href="/forgot-password" class="forgot" th:text="#{login.forgot.password}">Forgot password</a>
 			</fieldset>
 			<fieldset>
-				<button type="submit" name="submit" value="login">Log in</button>
+				<button type="submit" name="submit" value="login" th:text="#{login.form.submit}">Submit</button>
 			</fieldset>
 		</form>
 
 		<div class="signup">
-			<span>Don't have an account?</span>
-			<a th:href="@{/signup}" href="/signup">Sign up</a>
+			<span th:text="#{login.signup.text}">No account?</span>
+			<a th:href="@{/signup}" href="/signup" th:text="#{login.signup.link}">Sign up</a>
 		</div>
 
 	</main>
