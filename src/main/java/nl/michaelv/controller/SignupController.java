@@ -38,28 +38,28 @@ public class SignupController {
 	private TokenService verificationTokenService;
 
 	@Autowired
-	private static MessageUtil messages;
+	private MessageUtil messages;
 
 	@GetMapping("/signup")
 	public String signup(Model model) {
-		SignupForm form = new SignupForm();
-		model.addAttribute("form", form);
+		SignupForm signupForm = new SignupForm();
+		model.addAttribute("signupForm", signupForm);
 		model.addAttribute("tab", "signup");
 		return "signup";
 	}
 
 	@PostMapping("/signup")
-	public String signup(@Valid @ModelAttribute SignupForm form, BindingResult result, HttpServletRequest request, Model model) {
+	public String signup(@Valid @ModelAttribute SignupForm signupForm, BindingResult result, HttpServletRequest request, Model model) {
 		model.addAttribute("tab", "signup");
-		model.addAttribute("form", form);
+		model.addAttribute("signupForm", signupForm);
 
 		if (!result.hasErrors()) {
-			if (userService.exists(form.getEmail())) {
+			if (userService.exists(signupForm.getEmail())) {
 				result.rejectValue("email", null, messages.get("validation.user.exists"));
 				return "signup";
 			}
 
-			List<String> issues = ValidationUtil.validatePassword(form.getPassword());
+			List<String> issues = ValidationUtil.validatePassword(signupForm.getPassword());
 			if (issues.size() > 0) {
 				for (String issue : issues) {
 					result.rejectValue("password", null, issue);
@@ -67,12 +67,12 @@ public class SignupController {
 				return "signup";
 			}
 
-			if (!form.getPassword().equals(form.getPasswordConfirmation())) {
+			if (!signupForm.getPassword().equals(signupForm.getPasswordConfirmation())) {
 				result.rejectValue("passwordConfirmation", null, messages.get("validation.password.notequal"));
 				return "signup";
 			}
 
-			User user = userService.create(form);
+			User user = userService.create(signupForm);
 			if (user == null) {
 				result.reject(null, messages.get("message.signup.fail"));
 				return "signup";
@@ -90,6 +90,10 @@ public class SignupController {
 
 			model.addAttribute("message", messages.get("message.signup.success", user.getEmail()));
 			model.addAttribute("form", new SignupForm());
+		} else {
+			System.out.println("e: " + signupForm.getEmail() + " " + signupForm.getEmail().length());
+			System.out.println("t: " + signupForm.getPhone() + " " + signupForm.getPhone().length());
+			System.out.println("p: " + signupForm.getPassword() + " " + signupForm.getPassword().length());
 		}
 
 		return "signup";

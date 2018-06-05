@@ -3,7 +3,6 @@ package nl.michaelv.controller;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.util.List;
-import java.util.Locale;
 
 import nl.michaelv.model.User;
 import nl.michaelv.model.forms.PasswordForm;
@@ -16,7 +15,6 @@ import nl.michaelv.util.ValidationUtil;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
-import org.springframework.context.i18n.LocaleContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
@@ -41,7 +39,7 @@ public class PasswordController {
 	private TextualMailService mailService;
 
 	@Autowired
-	private static MessageUtil messages;
+	private MessageUtil messages;
 
 	@GetMapping("/forgot-password")
 	public String forgotPassword(Model model) {
@@ -55,8 +53,6 @@ public class PasswordController {
 
 		model.addAttribute("tab", "login");
 
-		Locale locale = LocaleContextHolder.getLocale();
-
 		// TODO: Forgot password form instead of an html basic form to enable validation and prepare for possible expansion
 		if (email == null || email.trim().isEmpty()) {
 			model.addAttribute("error", messages.get("validation.email.empty"));
@@ -65,7 +61,9 @@ public class PasswordController {
 
 		User user = userService.find(email);
 		if (user == null) {
-			model.addAttribute("error", messages.get("validation.user.notfound", email));
+			model.addAttribute("error",
+					messages.get("validation.user.notfound",
+							email));
 			return "forgot-password";
 		}
 
@@ -128,9 +126,9 @@ public class PasswordController {
 	}
 
 	@PostMapping("/set-password")
-	public String changePassword(@Valid @ModelAttribute PasswordForm form, User user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
+	public String changePassword(@Valid @ModelAttribute PasswordForm passwordForm, User user, BindingResult result, Model model, RedirectAttributes redirectAttributes) {
 
-		if (!form.getPassword().equals(form.getPasswordConfirmation())) {
+		if (!passwordForm.getPassword().equals(passwordForm.getPasswordConfirmation())) {
 			result.rejectValue("password", null, messages.get("validation.password.notequal"));
 			return "set-password";
 		}
@@ -143,7 +141,7 @@ public class PasswordController {
 			return "set-password";
 		}
 
-		user.setPassword(form.getPassword());
+		user.setPassword(passwordForm.getPassword());
 
 		User saved = userService.changePassword(user);
 		if (saved == null) {

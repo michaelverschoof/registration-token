@@ -2,12 +2,13 @@ package nl.michaelv.util;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.MessageSource;
+import org.springframework.context.MessageSourceAware;
 import org.springframework.context.i18n.LocaleContextHolder;
 
-public class MessageUtil {
+public class MessageUtil implements MessageSourceAware {
 
 	@Autowired
-	private static MessageSource messageSource;
+	private MessageSource messageSource;
 
 	public String get(String label) {
 		return get(label, (Object[]) null);
@@ -25,4 +26,8 @@ public class MessageUtil {
 		return messageSource.getMessage(label, args, LocaleContextHolder.getLocale());
 	}
 
+	@Override
+	public void setMessageSource(MessageSource messageSource) {
+		this.messageSource = messageSource;
+	}
 }
