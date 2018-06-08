@@ -41,36 +41,46 @@ public class PasswordController {
 	@Autowired
 	private MessageUtil messages;
 
+	private static final String LOGIN = "login";
+
+	private static final String FORGOT = "forgot-password";
+
+	private static final String SET = "set-password";
+
+	private static final String REDIRECT_HOME = "redirect:/";
+
+	private static final String ERROR = "error";
+
 	@GetMapping("/forgot-password")
 	public String forgotPassword(Model model) {
-		model.addAttribute("tab", "login");
-		return "forgot-password";
+		model.addAttribute("tab", LOGIN);
+		return FORGOT;
 	}
 
 	@PostMapping("/forgot-password")
 	public String forgotPassword(@RequestParam(name = "email", required = true) String email,
 			HttpServletRequest request, Model model) {
 
-		model.addAttribute("tab", "login");
+		model.addAttribute("tab", LOGIN);
 
 		// TODO: Forgot password form instead of an html basic form to enable validation and prepare for possible expansion
 		if (email == null || email.trim().isEmpty()) {
-			model.addAttribute("error", messages.get("validation.email.empty"));
-			return "forgot-password";
+			model.addAttribute(ERROR, messages.get("validation.email.empty"));
+			return FORGOT;
 		}
 
 		User user = userService.find(email);
 		if (user == null) {
-			model.addAttribute("error",
+			model.addAttribute(ERROR,
 					messages.get("validation.user.notfound",
 							email));
-			return "forgot-password";
+			return FORGOT;
 		}
 
 		Token passwordToken = passwordTokenService.create(user);
 		if (passwordToken == null) {
-			model.addAttribute("error", messages.get("validation.token.notcreated"));
-			return "forgot-password";
+			model.addAttribute(ERROR, messages.get("validation.token.notcreated"));
+			return FORGOT;
 		}
 
 		String url = request.getRequestURI() + "/verify/" + passwordToken.token();
@@ -78,51 +88,51 @@ public class PasswordController {
 
 		model.addAttribute("message", messages.get("message.token.sent", user.getEmail()));
 
-		return "forgot-password";
+		return FORGOT;
 	}
 
 	@GetMapping("/forgot-password/verify/{token}")
 	public String verifyForgotPassword(@PathVariable String token, RedirectAttributes redirectAttributes) {
 		Token passwordToken = passwordTokenService.findByToken(token);
 		if (passwordToken == null) {
-			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.notfound"));
-			return "redirect:/";
+			redirectAttributes.addFlashAttribute(ERROR, messages.get("validation.token.notfound"));
+			return REDIRECT_HOME;
 		}
 
 		if (passwordToken.confirmed()) {
-			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.used"));
-			return "redirect:/";
+			redirectAttributes.addFlashAttribute(ERROR, messages.get("validation.token.used"));
+			return REDIRECT_HOME;
 		}
 
 		if (passwordToken.expired()) {
-			redirectAttributes.addFlashAttribute("error", messages.get("validation.token.expired"));
-			return "redirect:/";
+			redirectAttributes.addFlashAttribute(ERROR, messages.get("validation.token.expired"));
+			return REDIRECT_HOME;
 		}
 
 		User user = passwordToken.user();
 		if (!user.isVerified()) {
-			redirectAttributes.addFlashAttribute("error", messages.get("validation.user.notverified"));
-			return "redirect:/";
+			redirectAttributes.addFlashAttribute(ERROR, messages.get("validation.user.notverified"));
+			return REDIRECT_HOME;
 		}
 
 		passwordToken.confirm();
 		passwordTokenService.save(passwordToken);
 
 		redirectAttributes.addFlashAttribute("user", user);
-		return "redirect:/set-password";
+		return REDIRECT_HOME + SET;
 	}
 
 	@GetMapping("/set-password")
 	public String changePassword(Model model, final RedirectAttributes redirectAttributes) {
 		if (!model.containsAttribute("user")) {
-			redirectAttributes.addFlashAttribute("error", messages.get("validation.user.notinmodel"));
-			return "redirect:/";
+			redirectAttributes.addFlashAttribute(ERROR, messages.get("validation.user.notinmodel"));
+			return REDIRECT_HOME;
 		}
 
 		PasswordForm form = new PasswordForm();
 		model.addAttribute("form", form);
-		model.addAttribute("tab", "login");
-		return "set-password";
+		model.addAttribute("tab", LOGIN);
+		return SET;
 	}
 
 	@PostMapping("/set-password")
@@ -130,28 +140,28 @@ public class PasswordController {
 
 		if (!passwordForm.getPassword().equals(passwordForm.getPasswordConfirmation())) {
 			result.rejectValue("password", null, messages.get("validation.password.notequal"));
-			return "set-password";
+			return SET;
 		}
 
 		List<String> issues = ValidationUtil.validatePassword(user.getPassword());
-		if (issues.size() > 0) {
+		if (!issues.isEmpty()) {
 			for (String issue : issues) {
 				result.rejectValue("password", null, issue);
 			}
-			return "set-password";
+			return SET;
 		}
 
 		user.setPassword(passwordForm.getPassword());
 
 		User saved = userService.changePassword(user);
 		if (saved == null) {
-			redirectAttributes.addFlashAttribute("error", messages.get("message.password.change.fail"));
-			return "redirect:/";
+			redirectAttributes.addFlashAttribute(ERROR, messages.get("message.password.change.fail"));
+			return REDIRECT_HOME;
 		}
 
 		mailService.sendForgotPasswordCompletedMail(saved.getEmail());
 		redirectAttributes.addFlashAttribute("message", messages.get("message.password.change.success"));
-		return "redirect:/";
+		return REDIRECT_HOME;
 	}
 
 }

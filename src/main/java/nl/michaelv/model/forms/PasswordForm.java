@@ -11,7 +11,7 @@ import org.hibernate.validator.constraints.NotBlank;
 public class PasswordForm {
 
 	private static final int MIN_LENGTH = 8;
-	private static final int MAX_LENGTH = 150;		// TODO: Useful number for max
+	private static final int MAX_LENGTH = 32;
 
 	@NotBlank(message = "{passwordform.password.blank}")
 	@Size(min = MIN_LENGTH, max = MAX_LENGTH, message = "{passwordform.password.size}")

@@ -62,7 +62,7 @@ public class UserAccountService implements UserService {
 		return save(user);
 	}
 
-	public UserDetails loadUserDetailsByUsername(String email) throws UsernameNotFoundException {
+	public UserDetails loadUserDetailsByUsername(String email) {
 		boolean accountNonExpired = true;
 		boolean credentialsNonExpired = true;
 		boolean accountNonLocked = true;

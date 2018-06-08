@@ -4,8 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Pattern;
 
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class ValidationUtil {
 
 	@Autowired
