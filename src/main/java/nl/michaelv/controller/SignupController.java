@@ -121,7 +121,7 @@ public class SignupController {
 
 		User user = verificationToken.user();
 		if (user.isVerified()) {
-			redirectAttributes.addFlashAttribute(ERROR, messages.get("validation.token.verified"));
+			redirectAttributes.addFlashAttribute(ERROR, messages.get("validation.user.verified"));
 			return REDIRECT_HOME;
 		}
 

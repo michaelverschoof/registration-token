@@ -5,6 +5,7 @@ import javax.validation.Valid;
 import java.util.List;
 
 import nl.michaelv.model.User;
+import nl.michaelv.model.forms.ForgotPasswordForm;
 import nl.michaelv.model.forms.PasswordForm;
 import nl.michaelv.model.tokens.Token;
 import nl.michaelv.service.TextualMailService;
@@ -22,7 +23,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
@@ -54,26 +54,17 @@ public class PasswordController {
 	@GetMapping("/forgot-password")
 	public String forgotPassword(Model model) {
 		model.addAttribute("tab", LOGIN);
+		model.addAttribute("forgotPasswordForm", new ForgotPasswordForm());
 		return FORGOT;
 	}
 
 	@PostMapping("/forgot-password")
-	public String forgotPassword(@RequestParam(name = "email", required = true) String email,
-			HttpServletRequest request, Model model) {
-
+	public String forgotPassword(@Valid ForgotPasswordForm form, HttpServletRequest request, Model model) {
 		model.addAttribute("tab", LOGIN);
 
-		// TODO: Forgot password form instead of an html basic form to enable validation and prepare for possible expansion
-		if (email == null || email.trim().isEmpty()) {
-			model.addAttribute(ERROR, messages.get("validation.email.empty"));
-			return FORGOT;
-		}
-
-		User user = userService.find(email);
+		User user = userService.find(form.getEmail());
 		if (user == null) {
-			model.addAttribute(ERROR,
-					messages.get("validation.user.notfound",
-							email));
+			model.addAttribute(ERROR, messages.get("validation.user.notfound", form.getEmail()));
 			return FORGOT;
 		}
 
@@ -87,6 +78,7 @@ public class PasswordController {
 		mailService.sendForgotPasswordMail(user.getEmail(), url);
 
 		model.addAttribute("message", messages.get("message.token.sent", user.getEmail()));
+		model.addAttribute("forgotForm", new ForgotPasswordForm());
 
 		return FORGOT;
 	}
